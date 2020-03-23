@@ -1,5 +1,7 @@
 package videoclubzgui;
 
+import PruebaBD.PruebaBD;
+
 public class Login extends javax.swing.JFrame {
 
     public Login() {
@@ -128,6 +130,8 @@ public class Login extends javax.swing.JFrame {
             case "Empleado":
                 if(txtPasswordLogin.getText().equals("123")){
                     System.out.println("Entraste como empleado");
+                    new PruebaBD().setVisible(true);
+                    dispose();
                 }
                 else{
                     System.out.println("Contraseña incorrecta");
