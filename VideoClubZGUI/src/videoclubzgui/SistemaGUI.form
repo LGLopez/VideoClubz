@@ -61,26 +61,26 @@
                           <Component id="lblRegEmpleados" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblHorario" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRegistrarEmp" min="-2" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lblNom" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="lblPrimerApe" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtPrimerApe" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <Component id="txtNom" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="txtPrimerApeEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="textNomEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                                       <Component id="lblSegundoApe" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtSegundoApe" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="txtSegundoApeEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtSalario" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="txtSalarioEmp" min="-2" pref="200" max="-2" attributes="0"/>
                                       <Component id="lblSalario" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtTelefono" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="txtTelefonoEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                                       <Component id="lblTelefono" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="lbPuesto" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="comboPuesto" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="comboEmp" min="-2" pref="200" max="-2" attributes="0"/>
                                       <Component id="lblRFC" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtRFC" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                      <Component id="txtIdEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -91,10 +91,10 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="txtBuscarEmp" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="txtHorario" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                  <Component id="txtHorarioEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnBuscar" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBuscarEmp" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="141" max="32767" attributes="0"/>
@@ -113,8 +113,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtNom" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="comboPuesto" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="textNomEmp" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="comboEmp" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -123,8 +123,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtPrimerApe" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="txtTelefono" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txtPrimerApeEmp" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txtTelefonoEmp" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -133,8 +133,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtSegundoApe" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="txtSalario" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txtSegundoApeEmp" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txtSalarioEmp" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -143,16 +143,16 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtHorario" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="txtRFC" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txtHorarioEmp" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txtIdEmp" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnRegistrarEmp" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel35" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtBuscarEmp" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnBuscarEmp" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="52" max="32767" attributes="0"/>
                   </Group>
@@ -176,7 +176,7 @@
                 <Property name="text" type="java.lang.String" value="Nombre:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtNom">
+            <Component class="javax.swing.JTextField" name="textNomEmp">
             </Component>
             <Component class="javax.swing.JLabel" name="lblPrimerApe">
               <Properties>
@@ -186,7 +186,7 @@
                 <Property name="text" type="java.lang.String" value="Primer Apellido:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtPrimerApe">
+            <Component class="javax.swing.JTextField" name="txtPrimerApeEmp">
             </Component>
             <Component class="javax.swing.JLabel" name="lblSegundoApe">
               <Properties>
@@ -196,7 +196,7 @@
                 <Property name="text" type="java.lang.String" value="Segundo Apellido:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtSegundoApe">
+            <Component class="javax.swing.JTextField" name="txtSegundoApeEmp">
             </Component>
             <Component class="javax.swing.JLabel" name="lbPuesto">
               <Properties>
@@ -214,7 +214,7 @@
                 <Property name="text" type="java.lang.String" value="Telefono:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtTelefono">
+            <Component class="javax.swing.JTextField" name="txtTelefonoEmp">
             </Component>
             <Component class="javax.swing.JLabel" name="lblSalario">
               <Properties>
@@ -224,7 +224,7 @@
                 <Property name="text" type="java.lang.String" value="Salario:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="comboPuesto">
+            <Component class="javax.swing.JComboBox" name="comboEmp">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="2">
@@ -237,7 +237,7 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtSalario">
+            <Component class="javax.swing.JTextField" name="txtSalarioEmp">
             </Component>
             <Component class="javax.swing.JLabel" name="lblHorario">
               <Properties>
@@ -247,22 +247,25 @@
                 <Property name="text" type="java.lang.String" value="Horario:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtHorario">
+            <Component class="javax.swing.JTextField" name="txtHorarioEmp">
             </Component>
-            <Component class="javax.swing.JButton" name="btnRegistrar">
+            <Component class="javax.swing.JButton" name="btnRegistrarEmp">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Registrar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistrarEmpActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblRFC">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="14" style="0"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="RFC:"/>
+                <Property name="text" type="java.lang.String" value="Id Empleado"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtRFC">
+            <Component class="javax.swing.JTextField" name="txtIdEmp">
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel35">
               <Properties>
@@ -274,10 +277,13 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtBuscarEmp">
             </Component>
-            <Component class="javax.swing.JButton" name="btnBuscar">
+            <Component class="javax.swing.JButton" name="btnBuscarEmp">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buscar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarEmpActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -316,7 +322,7 @@
                                                           <Component id="txtBuscarClient" min="-2" pref="150" max="-2" attributes="0"/>
                                                       </Group>
                                                       <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                                          <Component id="jTextField1" alignment="0" max="32767" attributes="0"/>
+                                                          <Component id="txtDirClient" alignment="0" max="32767" attributes="0"/>
                                                           <Component id="txtSegundoApeClient" alignment="0" pref="200" max="32767" attributes="0"/>
                                                       </Group>
                                                   </Group>
@@ -391,7 +397,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jTextField1" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Component id="txtDirClient" min="-2" pref="30" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRegistrarClient" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -452,7 +458,7 @@
                 <Property name="text" type="java.lang.String" value="Direccion:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTextField1">
+            <Component class="javax.swing.JTextField" name="txtDirClient">
             </Component>
             <Component class="javax.swing.JLabel" name="lblSaldoP">
               <Properties>
@@ -488,6 +494,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Registrar Cliente"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistrarClientActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel36">
               <Properties>
@@ -503,6 +512,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buscar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarClientActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -555,7 +567,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnBuscarPel" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -617,7 +629,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtCostoPel" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnBuscarPel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
@@ -753,10 +765,13 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtBuscarPel">
             </Component>
-            <Component class="javax.swing.JButton" name="jButton2">
+            <Component class="javax.swing.JButton" name="btnBuscarPel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buscar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarPelActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

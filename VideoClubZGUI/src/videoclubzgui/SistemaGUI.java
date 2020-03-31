@@ -1,9 +1,178 @@
 package videoclubzgui;
-
+import com.mysql.jdbc.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SistemaGUI extends javax.swing.JFrame {
 
+    public static Connection cnx = null;
+    //Declaracion de datos de conexión a BD
+    private static final String driver="com.mysql.jdbc.Driver";
+    private static final String user="root";
+    private static final String pass="12345";
+    private static final String url="jdbc:mysql://localhost:3306/videoclubz?useTimezone=true&serverTimezone=UTC";
+    
+    
+    public void checkQueryEmp(String idAux){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM empleados WHERE id_empleado = '"+idAux+"'";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            while(rs.next()){
+                txtIdEmp.setText(rs.getString("id_empleado"));
+                textNomEmp.setText(rs.getString("nombres_emp"));
+                txtPrimerApeEmp.setText(rs.getString("apellido1_emp"));
+                txtSegundoApeEmp.setText(rs.getString("apellido2_emp"));
+                //comboEmp.value(rs.getString("puesto"));
+                txtTelefonoEmp.setText(rs.getString("telefono_emp"));
+                txtSalarioEmp.setText(rs.getString("salario"));
+                txtHorarioEmp.setText(rs.getString("horario_emp"));
+                
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+        
+    }
+    
+    public void checkQueryCli(String rfc){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM clientes WHERE id_cliente = '"+rfc+"'";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            while(rs.next()){
+                txtRFCClient.setText(rs.getString("id_cliente"));
+                txtNomClient.setText(rs.getString("nombres_cliente"));
+                txtPrimerApeClient.setText(rs.getString("apellido1_cliente"));
+                txtSegundoApeClient.setText(rs.getString("apellido2_cliente"));
+                txtDirClient.setText (rs.getString("direccion_cliente"));
+                txtTelefonoClient.setText(rs.getString("telefono_cliente"));
+                txtSaldoClient.setText(rs.getString("saldo_pendiente"));
+                
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void insertEmpleado(String id,String nom,String ap1,String ap2,String pues,String tel,String sala,String hora) throws SQLException{
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "INSERT INTO empleados VALUES ('"+id+"','"+nom+"','"+ap1+"','"+ap2+"','"+pues+"','"+tel+"',"+sala+",'"+hora+"')";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void insertCliente(String rfc,String nom,String ap1,String ap2,String dir,String tel,Integer saldo){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
 
+        try {
+            stmt = cnx.createStatement();
+            query = "INSERT INTO clientes VALUES ('"+rfc+"','"+nom+"','"+ap1+"','"+ap2+"','"+dir+"','"+tel+"',"+saldo+")";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
     public SistemaGUI() {
         initComponents();
     }
@@ -34,6 +203,24 @@ public class SistemaGUI extends javax.swing.JFrame {
             default:
                 break;
         }
+        
+        // Reseteamos a null la conexion a la bd
+        cnx=null;
+        try{
+            Class.forName(driver);
+            // Nos conectamos a la bd
+            cnx= (Connection) DriverManager.getConnection(url, user, pass);
+            // Si la conexion fue exitosa mostramos un mensaje de conexion exitosa
+            if (cnx!=null){
+                System.out.println("Conexion establecida");
+            }
+        }
+        // Si la conexion NO fue exitosa mostramos un mensaje de error
+        catch (ClassNotFoundException | SQLException e){
+            System.out.println(""+e);
+        }
+        
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -44,25 +231,25 @@ public class SistemaGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lblRegEmpleados = new javax.swing.JLabel();
         lblNom = new javax.swing.JLabel();
-        txtNom = new javax.swing.JTextField();
+        textNomEmp = new javax.swing.JTextField();
         lblPrimerApe = new javax.swing.JLabel();
-        txtPrimerApe = new javax.swing.JTextField();
+        txtPrimerApeEmp = new javax.swing.JTextField();
         lblSegundoApe = new javax.swing.JLabel();
-        txtSegundoApe = new javax.swing.JTextField();
+        txtSegundoApeEmp = new javax.swing.JTextField();
         lbPuesto = new javax.swing.JLabel();
         lblTelefono = new javax.swing.JLabel();
-        txtTelefono = new javax.swing.JTextField();
+        txtTelefonoEmp = new javax.swing.JTextField();
         lblSalario = new javax.swing.JLabel();
-        comboPuesto = new javax.swing.JComboBox<>();
-        txtSalario = new javax.swing.JTextField();
+        comboEmp = new javax.swing.JComboBox<>();
+        txtSalarioEmp = new javax.swing.JTextField();
         lblHorario = new javax.swing.JLabel();
-        txtHorario = new javax.swing.JTextField();
-        btnRegistrar = new javax.swing.JButton();
+        txtHorarioEmp = new javax.swing.JTextField();
+        btnRegistrarEmp = new javax.swing.JButton();
         lblRFC = new javax.swing.JLabel();
-        txtRFC = new javax.swing.JTextField();
+        txtIdEmp = new javax.swing.JTextField();
         jLabel35 = new javax.swing.JLabel();
         txtBuscarEmp = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
+        btnBuscarEmp = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         lblRegClientes = new javax.swing.JLabel();
         lblNomClient = new javax.swing.JLabel();
@@ -72,7 +259,7 @@ public class SistemaGUI extends javax.swing.JFrame {
         txtPrimerApeClient = new javax.swing.JTextField();
         txtSegundoApeClient = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtDirClient = new javax.swing.JTextField();
         lblSaldoP = new javax.swing.JLabel();
         lblTelefonoClient = new javax.swing.JLabel();
         txtTelefonoClient = new javax.swing.JTextField();
@@ -104,7 +291,7 @@ public class SistemaGUI extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         txtBuscarPel = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        btnBuscarPel = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         lblRegPeliculas1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -188,20 +375,30 @@ public class SistemaGUI extends javax.swing.JFrame {
         lblSalario.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblSalario.setText("Salario:");
 
-        comboPuesto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado", "Gerente" }));
+        comboEmp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado", "Gerente" }));
 
         lblHorario.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblHorario.setText("Horario:");
 
-        btnRegistrar.setText("Registrar");
+        btnRegistrarEmp.setText("Registrar");
+        btnRegistrarEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarEmpActionPerformed(evt);
+            }
+        });
 
         lblRFC.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblRFC.setText("RFC:");
+        lblRFC.setText("Id Empleado");
 
         jLabel35.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel35.setText("Buscar:");
 
-        btnBuscar.setText("Buscar");
+        btnBuscarEmp.setText("Buscar");
+        btnBuscarEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarEmpActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -213,34 +410,34 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(lblRegEmpleados)
                     .addComponent(lblHorario)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnRegistrar)
+                        .addComponent(btnRegistrarEmp)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(lblNom)
                                 .addComponent(lblPrimerApe)
-                                .addComponent(txtPrimerApe, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtNom, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtPrimerApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textNomEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblSegundoApe)
-                                .addComponent(txtSegundoApe, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtSegundoApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(33, 33, 33)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtSalarioEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblSalario)
-                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtTelefonoEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblTelefono)
                                 .addComponent(lbPuesto)
-                                .addComponent(comboPuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(comboEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblRFC)
-                                .addComponent(txtRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtIdEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel35)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtBuscarEmp))
-                            .addComponent(txtHorario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtHorarioEmp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(btnBuscar)))
+                        .addComponent(btnBuscarEmp)))
                 .addContainerGap(141, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -254,39 +451,39 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(lbPuesto))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNom, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboPuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textNomEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPrimerApe)
                     .addComponent(lblTelefono))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtPrimerApe, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPrimerApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTelefonoEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSegundoApe)
                     .addComponent(lblSalario))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtSegundoApe, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSegundoApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSalarioEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblHorario)
                     .addComponent(lblRFC))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtHorarioEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnRegistrar)
+                .addComponent(btnRegistrarEmp)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel35)
                     .addComponent(txtBuscarEmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar))
+                    .addComponent(btnBuscarEmp))
                 .addContainerGap(52, Short.MAX_VALUE))
         );
 
@@ -317,11 +514,21 @@ public class SistemaGUI extends javax.swing.JFrame {
         lblRFCClient.setText("RFC:");
 
         btnRegistrarClient.setText("Registrar Cliente");
+        btnRegistrarClient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarClientActionPerformed(evt);
+            }
+        });
 
         jLabel36.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel36.setText("Buscar:");
 
         btnBuscarClient.setText("Buscar");
+        btnBuscarClient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarClientActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -349,7 +556,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(txtBuscarClient, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txtDirClient, javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(txtSegundoApeClient, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(btnBuscarClient)))
@@ -402,7 +609,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtDirClient, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRegistrarClient)
                 .addGap(18, 18, 18)
@@ -448,7 +655,12 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel14.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel14.setText("Buscar:");
 
-        jButton2.setText("Buscar");
+        btnBuscarPel.setText("Buscar");
+        btnBuscarPel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarPelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -485,7 +697,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2))
+                                .addComponent(btnBuscarPel))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
@@ -532,7 +744,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCostoPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton2))
+                    .addComponent(btnBuscarPel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -913,25 +1125,54 @@ public class SistemaGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBuscarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPelActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnBuscarPelActionPerformed
+
+    private void btnBuscarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpActionPerformed
+        // TODO add your handling code here:
+        checkQueryEmp(txtBuscarEmp.getText());
+    }//GEN-LAST:event_btnBuscarEmpActionPerformed
+
+    private void btnRegistrarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarEmpActionPerformed
+        try {
+            // TODO add your handling code here:
+            insertEmpleado(txtIdEmp.getText(),textNomEmp.getText(),txtPrimerApeEmp.getText(),txtSegundoApeEmp.getText(),"Gerente",txtTelefonoEmp.getText(),txtSalarioEmp.getText(),txtHorarioEmp.getText());
+        } catch (SQLException ex) {
+            Logger.getLogger(SistemaGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRegistrarEmpActionPerformed
+
+    private void btnRegistrarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarClientActionPerformed
+        // TODO add your handling code here:
+        insertCliente(txtRFCClient.getText(),txtNomClient.getText(),txtPrimerApeClient.getText(),txtSegundoApeClient.getText(),txtDirClient.getText(),txtTelefonoClient.getText(),Integer.parseInt(txtSaldoClient.getText()));
+    }//GEN-LAST:event_btnRegistrarClientActionPerformed
+
+    private void btnBuscarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClientActionPerformed
+        // TODO add your handling code here:
+        checkQueryCli(txtBuscarClient.getText());
+    }//GEN-LAST:event_btnBuscarClientActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnBuscarClient;
+    private javax.swing.JButton btnBuscarEmp;
+    private javax.swing.JButton btnBuscarPel;
     private javax.swing.JButton btnBuscarSer;
     private javax.swing.JButton btnBuscarVen;
     private javax.swing.JButton btnComprarVen;
     private javax.swing.JButton btnEntregarPres;
     private javax.swing.JButton btnPrestamo;
     private javax.swing.JButton btnRegSer;
-    private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnRegistrarClient;
+    private javax.swing.JButton btnRegistrarEmp;
+    private javax.swing.JComboBox<String> comboEmp;
     private javax.swing.JComboBox<String> comboGenero;
     private javax.swing.JComboBox<String> comboGeneroSer;
     private javax.swing.JComboBox<String> comboPagoPres;
     private javax.swing.JComboBox<String> comboPagoVen;
-    private javax.swing.JComboBox<String> comboPuesto;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -974,7 +1215,6 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lbPuesto;
     private javax.swing.JLabel lblFechaActualPres;
     private javax.swing.JLabel lblHorario;
@@ -997,6 +1237,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblTelefono;
     private javax.swing.JLabel lblTelefonoClient;
     private javax.swing.JTabbedPane panelTabs;
+    private javax.swing.JTextField textNomEmp;
     private javax.swing.JTextField txtAnioPel;
     private javax.swing.JTextField txtBuscarClient;
     private javax.swing.JTextField txtBuscarEmp;
@@ -1008,6 +1249,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtCostoPel;
     private javax.swing.JTextField txtCostoSer;
     private javax.swing.JTextField txtCostoVen;
+    private javax.swing.JTextField txtDirClient;
     private javax.swing.JTextField txtDirectorPel;
     private javax.swing.JTextField txtEpisodiosSer;
     private javax.swing.JTextField txtEstanteriaPel;
@@ -1017,23 +1259,22 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtExistenciaPresPel;
     private javax.swing.JTextField txtExistenciaVenPel;
     private javax.swing.JTextField txtFechaEstPres;
-    private javax.swing.JTextField txtHorario;
-    private javax.swing.JTextField txtNom;
+    private javax.swing.JTextField txtHorarioEmp;
+    private javax.swing.JTextField txtIdEmp;
     private javax.swing.JTextField txtNomClient;
-    private javax.swing.JTextField txtPrimerApe;
     private javax.swing.JTextField txtPrimerApeClient;
+    private javax.swing.JTextField txtPrimerApeEmp;
     private javax.swing.JTextField txtProdVen;
     private javax.swing.JTextField txtProductoPres;
-    private javax.swing.JTextField txtRFC;
     private javax.swing.JTextField txtRFCClient;
     private javax.swing.JTextField txtRFCClientVen;
     private javax.swing.JTextField txtRFCEmpVen;
-    private javax.swing.JTextField txtSalario;
+    private javax.swing.JTextField txtSalarioEmp;
     private javax.swing.JTextField txtSaldoClient;
-    private javax.swing.JTextField txtSegundoApe;
     private javax.swing.JTextField txtSegundoApeClient;
-    private javax.swing.JTextField txtTelefono;
+    private javax.swing.JTextField txtSegundoApeEmp;
     private javax.swing.JTextField txtTelefonoClient;
+    private javax.swing.JTextField txtTelefonoEmp;
     private javax.swing.JTextField txtTempAnioSer;
     private javax.swing.JTextField txtTempSer;
     private javax.swing.JTextField txtTituloPel;
