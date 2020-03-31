@@ -119,7 +119,7 @@ public class Login extends javax.swing.JFrame {
         switch (txtUsuarioLogin.getText()) {
             case "Jefe":
                 if(txtPasswordLogin.getText().equals("12345")){
-                    new SistemaGUI().setVisible(true);
+                    new SistemaGUI("Jefe").setVisible(true);
                     dispose();
                     System.out.println("Entraste como el jefe");
                 }
@@ -130,7 +130,7 @@ public class Login extends javax.swing.JFrame {
             case "Empleado":
                 if(txtPasswordLogin.getText().equals("123")){
                     System.out.println("Entraste como empleado");
-                    new PruebaBD().setVisible(true);
+                    new SistemaGUI("Empleado").setVisible(true);
                     dispose();
                 }
                 else{

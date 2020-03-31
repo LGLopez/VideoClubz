@@ -8,11 +8,39 @@ public class SistemaGUI extends javax.swing.JFrame {
         initComponents();
     }
 
+    public SistemaGUI(String perfil) {
+        initComponents();
+        
+        switch(perfil){
+            case "Jefe":
+                panelTabs.setEnabledAt(0, true);
+                panelTabs.setEnabledAt(1, true);
+                panelTabs.setEnabledAt(2, true);
+                panelTabs.setEnabledAt(3, true);
+                panelTabs.setEnabledAt(4, true);
+                panelTabs.setEnabledAt(5, true);
+                break;
+                
+            case "Empleado":
+                panelTabs.setEnabledAt(0, false);
+                panelTabs.setEnabledAt(1, true);
+                panelTabs.setEnabledAt(2, true);
+                panelTabs.setEnabledAt(3, true);
+                panelTabs.setEnabledAt(4, true);
+                panelTabs.setEnabledAt(5, true);
+                panelTabs.setSelectedIndex(1);
+                break;
+                
+            default:
+                break;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        panelTabs = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         lblRegEmpleados = new javax.swing.JLabel();
         lblNom = new javax.swing.JLabel();
@@ -262,7 +290,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap(52, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Empleados", jPanel1);
+        panelTabs.addTab("Empleados", jPanel1);
 
         lblRegClientes.setFont(new java.awt.Font("Yu Gothic Medium", 0, 36)); // NOI18N
         lblRegClientes.setText("Registro de Clientes");
@@ -385,7 +413,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap(52, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Clientes", jPanel3);
+        panelTabs.addTab("Clientes", jPanel3);
 
         lblRegPeliculas.setFont(new java.awt.Font("Yu Gothic Medium", 0, 36)); // NOI18N
         lblRegPeliculas.setText("Peliculas");
@@ -518,7 +546,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap(58, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Peliculas", jPanel2);
+        panelTabs.addTab("Peliculas", jPanel2);
 
         lblRegPeliculas1.setFont(new java.awt.Font("Yu Gothic Medium", 0, 36)); // NOI18N
         lblRegPeliculas1.setText("Prestamos");
@@ -622,7 +650,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap(112, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Prestamo", jPanel4);
+        panelTabs.addTab("Prestamo", jPanel4);
 
         lblRegPeliculas2.setFont(new java.awt.Font("Yu Gothic Medium", 0, 36)); // NOI18N
         lblRegPeliculas2.setText("Series");
@@ -747,7 +775,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap(79, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Series", jPanel5);
+        panelTabs.addTab("Series", jPanel5);
 
         lblRegPeliculas3.setFont(new java.awt.Font("Yu Gothic Medium", 0, 36)); // NOI18N
         lblRegPeliculas3.setText("Ventas");
@@ -865,20 +893,20 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap(67, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Venta", jPanel6);
+        panelTabs.addTab("Venta", jPanel6);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -946,7 +974,6 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lbPuesto;
     private javax.swing.JLabel lblFechaActualPres;
@@ -969,6 +996,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblSegundoApeClient;
     private javax.swing.JLabel lblTelefono;
     private javax.swing.JLabel lblTelefonoClient;
+    private javax.swing.JTabbedPane panelTabs;
     private javax.swing.JTextField txtAnioPel;
     private javax.swing.JTextField txtBuscarClient;
     private javax.swing.JTextField txtBuscarEmp;
