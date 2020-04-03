@@ -14,7 +14,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     //Declaracion de datos de conexión a BD
     private static final String driver="com.mysql.jdbc.Driver";
     private static final String user="root";
-    private static final String pass="12345";
+    private static final String pass="655361";
     private static final String url="jdbc:mysql://localhost:3306/videoclubz?useTimezone=true&serverTimezone=UTC";
     
     
@@ -173,6 +173,38 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         }
     }
+    
+    public void insertPelicula(String titulo,String director,String genero,int anio,int costo,int existencia_pres, int existencia_vent, int estante){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+
+        try {
+            stmt = cnx.createStatement();
+            query = "INSERT INTO peliculas(anio_pel, titulo_pel, genero_pel, costo_pel, director_pel, existencias_pres_pel, existencias_ven_pel, num_estant) VALUES ("+anio+",'"+titulo+"','"+genero+"',"+costo+",'"+director+"',"+existencia_pres+","+existencia_vent+","+estante+")";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
     public SistemaGUI() {
         initComponents();
     }
@@ -288,7 +320,7 @@ public class SistemaGUI extends javax.swing.JFrame {
         txtEstanteriaPel = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         comboGenero = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        btnRegPel = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         txtBuscarPel = new javax.swing.JTextField();
         btnBuscarPel = new javax.swing.JButton();
@@ -650,7 +682,12 @@ public class SistemaGUI extends javax.swing.JFrame {
 
         comboGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Acción", "Romance", "Comedia", "Terror", "Infantil", "Familiar", "Histórica", "Drama" }));
 
-        jButton1.setText("Registrar Pelicula");
+        btnRegPel.setText("Registrar Pelicula");
+        btnRegPel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegPelActionPerformed(evt);
+            }
+        });
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel14.setText("Buscar:");
@@ -706,7 +743,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                                     .addComponent(txtAnioPel, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtDirectorPel, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)))
+                                .addComponent(btnRegPel)))
                         .addGap(36, 36, 36))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -754,7 +791,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(btnRegPel))
                 .addContainerGap(58, Short.MAX_VALUE))
         );
 
@@ -1154,6 +1191,10 @@ public class SistemaGUI extends javax.swing.JFrame {
         checkQueryCli(txtBuscarClient.getText());
     }//GEN-LAST:event_btnBuscarClientActionPerformed
 
+    private void btnRegPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegPelActionPerformed
+        insertPelicula(txtTituloPel.getText(), txtDirectorPel.getText(), (String)comboGenero.getSelectedItem(), Integer.parseInt(txtAnioPel.getText()), Integer.parseInt(txtCostoPel.getText()), Integer.parseInt(txtExistenciaPresPel.getText()), Integer.parseInt(txtExistenciaVenPel.getText()), Integer.parseInt(txtEstanteriaPel.getText()));
+    }//GEN-LAST:event_btnRegPelActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscarClient;
@@ -1164,6 +1205,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnComprarVen;
     private javax.swing.JButton btnEntregarPres;
     private javax.swing.JButton btnPrestamo;
+    private javax.swing.JButton btnRegPel;
     private javax.swing.JButton btnRegSer;
     private javax.swing.JButton btnRegistrarClient;
     private javax.swing.JButton btnRegistrarEmp;
@@ -1172,7 +1214,6 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboGeneroSer;
     private javax.swing.JComboBox<String> comboPagoPres;
     private javax.swing.JComboBox<String> comboPagoVen;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
