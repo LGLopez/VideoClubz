@@ -15,7 +15,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     //Declaracion de datos de conexión a BD
     private static final String driver="com.mysql.jdbc.Driver";
     private static final String user="root";
-    private static final String pass="655361";
+    private static final String pass="12345";
     private static final String url="jdbc:mysql://localhost:3306/videoclubz?useTimezone=true&serverTimezone=UTC";
     
     
