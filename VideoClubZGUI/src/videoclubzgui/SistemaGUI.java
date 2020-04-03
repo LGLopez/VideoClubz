@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class SistemaGUI extends javax.swing.JFrame {
 
@@ -37,7 +38,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 textNomEmp.setText(rs.getString("nombres_emp"));
                 txtPrimerApeEmp.setText(rs.getString("apellido1_emp"));
                 txtSegundoApeEmp.setText(rs.getString("apellido2_emp"));
-                //comboEmp.value(rs.getString("puesto"));
+                comboEmp.setSelectedItem(rs.getString("puesto"));
                 txtTelefonoEmp.setText(rs.getString("telefono_emp"));
                 txtSalarioEmp.setText(rs.getString("salario"));
                 txtHorarioEmp.setText(rs.getString("horario_emp"));
@@ -89,6 +90,117 @@ public class SistemaGUI extends javax.swing.JFrame {
                 txtTelefonoClient.setText(rs.getString("telefono_cliente"));
                 txtSaldoClient.setText(rs.getString("saldo_pendiente"));
                 
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void checkQueryPeliculas(String titulo){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM peliculas WHERE titulo_pel = '"+titulo+"'";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "No se encontro la pelicula");
+            }else{
+                do{
+                    txtTituloPel.setText(rs.getString("titulo_pel"));
+                    txtDirectorPel.setText(rs.getString("director_pel"));
+                    txtAnioPel.setText(rs.getString("anio_pel"));
+                    txtEstanteriaPel.setText(rs.getString("num_estant"));
+                    txtCostoPel.setText(rs.getString("costo_pel"));
+                    txtExistenciaPresPel.setText(rs.getString("existencias_pres_pel"));
+                    txtExistenciaVenPel.setText(rs.getString("existencias_ven_pel"));
+                    comboGenero.setSelectedItem(rs.getString("genero_pel"));
+                }while(rs.next());
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void checkQuerySeries(String titulo){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM series WHERE titulo_ser = '"+titulo+"'";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "No se encontro la serie");
+            }else{
+                do{
+                    txtTituloSer.setText(rs.getString("titulo_ser"));
+                    comboGeneroSer.setSelectedItem(rs.getString("genero_ser"));
+                    txtTempAnioSer.setText(rs.getString("anio_temp"));
+                    txtEpisodiosSer.setText(rs.getString("num_caps"));
+                    txtTempSer.setText(rs.getString("num_temp"));
+                    txtCostoSer.setText(rs.getString("costo_ser"));
+                    txtExisPresSer.setText(rs.getString("existencias_pres_ser"));
+                    txtExisVenSer.setText(rs.getString("existencias_ven_ser"));
+                    txtEstanteriaSer.setText(rs.getString("num_estant"));
+                    /*
+                    txtTituloPel.setText(rs.getString("titulo_pel"));
+                    txtDirectorPel.setText(rs.getString("director_pel"));
+                    txtAnioPel.setText(rs.getString("anio_pel"));
+                    txtEstanteriaPel.setText(rs.getString("num_estant"));
+                    txtCostoPel.setText(rs.getString("costo_pel"));
+                    txtExistenciaPresPel.setText(rs.getString("existencias_pres_pel"));
+                    txtExistenciaVenPel.setText(rs.getString("existencias_ven_pel"));
+                    comboGenero.setSelectedItem(rs.getString("genero_pel"));
+                    */
+                }while(rs.next());
             }
                 
         } catch (SQLException ex) {
@@ -182,6 +294,37 @@ public class SistemaGUI extends javax.swing.JFrame {
         try {
             stmt = cnx.createStatement();
             query = "INSERT INTO peliculas(anio_pel, titulo_pel, genero_pel, costo_pel, director_pel, existencias_pres_pel, existencias_ven_pel, num_estant) VALUES ("+anio+",'"+titulo+"','"+genero+"',"+costo+",'"+director+"',"+existencia_pres+","+existencia_vent+","+estante+")";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void insertSerie(String titulo,String genero,int numTemp,int anioTemp,int numCaps, int costo, int existenciaPresSer, int existenciaVenSer, int estanteria){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+
+        try {
+            stmt = cnx.createStatement();
+            query = "INSERT INTO series(num_temp, anio_temp, num_caps, costo_ser, titulo_ser, genero_ser, existencias_pres_ser, existencias_ven_ser, num_estant) VALUES ("+numTemp+","+anioTemp+","+numCaps+","+costo+",'"+titulo+"','"+genero+"',"+existenciaPresSer+","+existenciaVenSer+ "," + estanteria +")";
             stmt.execute(query);
             
         } catch(SQLException ex) {
@@ -925,8 +1068,18 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel23.setText("Estanteria:");
 
         btnRegSer.setText("Registrar");
+        btnRegSer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegSerActionPerformed(evt);
+            }
+        });
 
         btnBuscarSer.setText("Buscar");
+        btnBuscarSer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarSerActionPerformed(evt);
+            }
+        });
 
         jLabel24.setText("Buscar:");
 
@@ -1163,8 +1316,8 @@ public class SistemaGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPelActionPerformed
-        // TODO add your handling code here:
         
+        checkQueryPeliculas(txtBuscarPel.getText());
     }//GEN-LAST:event_btnBuscarPelActionPerformed
 
     private void btnBuscarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpActionPerformed
@@ -1193,7 +1346,32 @@ public class SistemaGUI extends javax.swing.JFrame {
 
     private void btnRegPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegPelActionPerformed
         insertPelicula(txtTituloPel.getText(), txtDirectorPel.getText(), (String)comboGenero.getSelectedItem(), Integer.parseInt(txtAnioPel.getText()), Integer.parseInt(txtCostoPel.getText()), Integer.parseInt(txtExistenciaPresPel.getText()), Integer.parseInt(txtExistenciaVenPel.getText()), Integer.parseInt(txtEstanteriaPel.getText()));
+        
+        txtTituloPel.setText("");
+        txtDirectorPel.setText("");
+        txtAnioPel.setText("");
+        txtCostoPel.setText("");
+        txtExistenciaPresPel.setText("");
+        txtExistenciaVenPel.setText("");
+        txtEstanteriaPel.setText("");
     }//GEN-LAST:event_btnRegPelActionPerformed
+
+    private void btnRegSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegSerActionPerformed
+        insertSerie(txtTituloSer.getText(), (String)comboGeneroSer.getSelectedItem(), Integer.parseInt(txtTempSer.getText()), Integer.parseInt(txtTempAnioSer.getText()), Integer.parseInt(txtEpisodiosSer.getText()), Integer.parseInt(txtCostoSer.getText()), Integer.parseInt(txtExisPresSer.getText()), Integer.parseInt(txtExisVenSer.getText()), Integer.parseInt(txtEstanteriaSer.getText()));
+        
+        txtTituloSer.setText("");
+        txtTempSer.setText("");
+        txtTempAnioSer.setText("");
+        txtEpisodiosSer.setText("");
+        txtCostoSer.setText("");
+        txtExisPresSer.setText("");
+        txtExisVenSer.setText("");
+        txtEstanteriaSer.setText("");
+    }//GEN-LAST:event_btnRegSerActionPerformed
+
+    private void btnBuscarSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSerActionPerformed
+        checkQuerySeries(txtBuscarSer.getText());
+    }//GEN-LAST:event_btnBuscarSerActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
