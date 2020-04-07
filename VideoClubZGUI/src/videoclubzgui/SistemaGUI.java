@@ -21,9 +21,12 @@ public class SistemaGUI extends javax.swing.JFrame {
     //Declaracion de datos de conexión a BD
     private static final String driver="com.mysql.jdbc.Driver";
     private static final String user="root";
-    private static final String pass="12345";
+    private static final String pass="655361";
     private static final String url="jdbc:mysql://localhost:3306/videoclubz?useTimezone=true&serverTimezone=UTC";
     
+    //Variables globales para actualizar campos
+    //Clientes
+    String tmpRFCClient;
     
     public void checkQueryEmp(String idAux){
         Statement stmt = null;
@@ -88,6 +91,7 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
             
             while(rs.next()){
+                //Recoger datos y poner  en text
                 txtRFCClient.setText(rs.getString("id_cliente"));
                 txtNomClient.setText(rs.getString("nombres_cliente"));
                 txtPrimerApeClient.setText(rs.getString("apellido1_cliente"));
@@ -96,6 +100,14 @@ public class SistemaGUI extends javax.swing.JFrame {
                 txtTelefonoClient.setText(rs.getString("telefono_cliente"));
                 txtSaldoClient.setText(rs.getString("saldo_pendiente"));
                 
+                //Asignar valores a variables temp
+                tmpRFCClient = rs.getString("id_cliente");
+                
+                //Actualizar botones
+                btnActualizarClient.setVisible(true);
+                btnCancelarClient.setVisible(true);
+                btnRegistrarClient.setVisible(false);
+                btnBuscarClient.setVisible(false);
             }
                 
         } catch (SQLException ex) {
@@ -196,16 +208,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                     txtExisPresSer.setText(rs.getString("existencias_pres_ser"));
                     txtExisVenSer.setText(rs.getString("existencias_ven_ser"));
                     txtEstanteriaSer.setText(rs.getString("num_estant"));
-                    /*
-                    txtTituloPel.setText(rs.getString("titulo_pel"));
-                    txtDirectorPel.setText(rs.getString("director_pel"));
-                    txtAnioPel.setText(rs.getString("anio_pel"));
-                    txtEstanteriaPel.setText(rs.getString("num_estant"));
-                    txtCostoPel.setText(rs.getString("costo_pel"));
-                    txtExistenciaPresPel.setText(rs.getString("existencias_pres_pel"));
-                    txtExistenciaVenPel.setText(rs.getString("existencias_ven_pel"));
-                    comboGenero.setSelectedItem(rs.getString("genero_pel"));
-                    */
+                    
                 }while(rs.next());
             }
                 
@@ -238,6 +241,37 @@ public class SistemaGUI extends javax.swing.JFrame {
         try {
             stmt = cnx.createStatement();
             query = "INSERT INTO empleados VALUES ('"+id+"','"+nom+"','"+ap1+"','"+ap2+"','"+pues+"','"+tel+"',"+sala+",'"+hora+"')";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void updateCliente(String rfc, String nom,String ap1,String ap2,String dir,String tel,Integer saldo){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+
+        try {
+            stmt = cnx.createStatement();
+            query = "update clientes set nombres_cliente = '"+ nom+"', apellido1_cliente = '" + ap1 + "', apellido2_cliente = '" + ap2 + "', direccion_cliente = '" + dir + "', telefono_cliente = '" + tel + "', saldo_pendiente = " + saldo + " where id_cliente = '" + rfc + "'";
             stmt.execute(query);
             
         } catch(SQLException ex) {
@@ -697,6 +731,9 @@ public class SistemaGUI extends javax.swing.JFrame {
     public SistemaGUI(String perfil) {
         initComponents();
         
+        btnActualizarClient.setVisible(false);
+        btnCancelarClient.setVisible(false);
+        
         switch(perfil){
             case "Jefe":
                 panelTabs.setEnabledAt(0, true);
@@ -798,6 +835,8 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel36 = new javax.swing.JLabel();
         txtBuscarClient = new javax.swing.JTextField();
         btnBuscarClient = new javax.swing.JButton();
+        btnActualizarClient = new javax.swing.JButton();
+        btnCancelarClient = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         lblRegPeliculas = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -888,6 +927,7 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel37 = new javax.swing.JLabel();
         txtSerieVen = new javax.swing.JTextField();
         btnAgregarSer = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -975,7 +1015,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                             .addComponent(txtHorarioEmp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(btnBuscarEmp)))
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(252, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1021,7 +1061,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(jLabel35)
                     .addComponent(txtBuscarEmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarEmp))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Empleados", jPanel1);
@@ -1067,42 +1107,59 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         });
 
+        btnActualizarClient.setText("Actualizar");
+        btnActualizarClient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarClientActionPerformed(evt);
+            }
+        });
+
+        btnCancelarClient.setText("Cancelar");
+        btnCancelarClient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarClientActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnRegistrarClient)
+                    .addComponent(btnCancelarClient)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addContainerGap()
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lblRegClientes)
-                                        .addComponent(txtPrimerApeClient, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtNomClient, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblPrimerApeClient)
-                                        .addComponent(lblSegundoApeClient)
-                                        .addComponent(jLabel1)
-                                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                                    .addComponent(jLabel36)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(txtBuscarClient, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(txtDirClient, javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(txtSegundoApeClient, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(btnBuscarClient)))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(lblNomClient)
-                                        .addGap(180, 180, 180)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblTelefonoClient)
-                                            .addComponent(lblSaldoP))))
+                                            .addComponent(lblRegClientes)
+                                            .addComponent(txtPrimerApeClient, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtNomClient, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lblPrimerApeClient)
+                                            .addComponent(lblSegundoApeClient)
+                                            .addComponent(jLabel1)
+                                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                                        .addComponent(jLabel36)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(txtBuscarClient, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                        .addComponent(txtDirClient, javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(txtSegundoApeClient, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(btnBuscarClient)))
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(lblNomClient)
+                                            .addGap(180, 180, 180)
+                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(lblTelefonoClient)
+                                                .addComponent(lblSaldoP))))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnActualizarClient))
                                 .addGroup(jPanel3Layout.createSequentialGroup()
                                     .addGap(234, 234, 234)
                                     .addComponent(txtSaldoClient, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -1111,8 +1168,11 @@ public class SistemaGUI extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(lblRFCClient)
                                 .addComponent(txtTelefonoClient)
-                                .addComponent(txtRFCClient, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))))
-                .addContainerGap(140, Short.MAX_VALUE))
+                                .addComponent(txtRFCClient, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(btnRegistrarClient))))
+                .addContainerGap(251, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1144,17 +1204,21 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(txtRFCClient)
                     .addComponent(txtSegundoApeClient, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(btnRegistrarClient))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDirClient, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtDirClient, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnActualizarClient))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRegistrarClient)
+                .addComponent(btnCancelarClient)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel36)
                     .addComponent(txtBuscarClient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarClient))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(176, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Clientes", jPanel3);
@@ -1228,7 +1292,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                                     .addComponent(txtEstanteriaPel)
                                     .addComponent(comboGenero, 0, 200, Short.MAX_VALUE)
                                     .addComponent(txtBuscarPel))))
-                        .addContainerGap(140, Short.MAX_VALUE))
+                        .addContainerGap(251, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1297,7 +1361,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegPel))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(188, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Peliculas", jPanel2);
@@ -1395,7 +1459,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                                         .addComponent(txtFechaEstPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtBuscarPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel12)))))
-                        .addGap(0, 11, Short.MAX_VALUE))
+                        .addGap(0, 217, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel30)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1455,7 +1519,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtBuscarPres)
                     .addComponent(txtFechaInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Prestamo", jPanel4);
@@ -1539,7 +1603,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                                     .addComponent(txtEstanteriaSer)
                                     .addComponent(txtBuscarSer, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
                                 .addComponent(btnBuscarSer)))))
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1591,7 +1655,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCostoSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegSer))
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(209, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Series", jPanel5);
@@ -1626,6 +1690,11 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel34.setText("Buscar:");
 
         btnBuscarVen.setText("Buscar");
+        btnBuscarVen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarVenActionPerformed(evt);
+            }
+        });
 
         btnComprarVen.setText("Comprar!");
         btnComprarVen.addActionListener(new java.awt.event.ActionListener() {
@@ -1670,9 +1739,9 @@ public class SistemaGUI extends javax.swing.JFrame {
                                     .addComponent(txtCostoVen)
                                     .addComponent(comboPagoVen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtRFCClientVen)
-                                    .addComponent(jLabel25)
                                     .addGroup(jPanel6Layout.createSequentialGroup()
                                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel25)
                                             .addComponent(lblRegPeliculas3)
                                             .addComponent(jLabel26)
                                             .addComponent(jLabel28))
@@ -1763,23 +1832,36 @@ public class SistemaGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBuscarVen))
                     .addComponent(btnComprarVen, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(196, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Venta", jPanel6);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 695, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 572, Short.MAX_VALUE)
+        );
+
+        panelTabs.addTab("Estanterias", jPanel7);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1811,8 +1893,8 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarClientActionPerformed
 
     private void btnBuscarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClientActionPerformed
-        // TODO add your handling code here:
         checkQueryCli(txtBuscarClient.getText());
+        
     }//GEN-LAST:event_btnBuscarClientActionPerformed
 
     private void btnRegPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegPelActionPerformed
@@ -1894,7 +1976,49 @@ public class SistemaGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_butAgregarSerActionPerformed
 
+    private void btnBuscarVenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVenActionPerformed
+
+    }//GEN-LAST:event_btnBuscarVenActionPerformed
+
+    private void btnCancelarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarClientActionPerformed
+        tmpRFCClient = null;
+
+        btnActualizarClient.setVisible(false);
+        btnCancelarClient.setVisible(false);
+        btnRegistrarClient.setVisible(true);
+        btnBuscarClient.setVisible(true);
+        
+        txtNomClient.setText("");
+        txtPrimerApeClient.setText("");
+        txtSegundoApeClient.setText("");
+        txtDirClient.setText("");
+        txtSaldoClient.setText("");
+        txtTelefonoClient.setText("");
+        txtRFCClient.setText("");
+        txtBuscarClient.setText("");
+        
+    }//GEN-LAST:event_btnCancelarClientActionPerformed
+
+    private void btnActualizarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientActionPerformed
+        updateCliente(tmpRFCClient, txtNomClient.getText(), txtPrimerApeClient.getText(), txtSegundoApeClient.getText(), txtDirClient.getText(), txtTelefonoClient.getText(), Integer.parseInt(txtSaldoClient.getText()));
+        
+        btnActualizarClient.setVisible(false);
+        btnCancelarClient.setVisible(false);
+        btnRegistrarClient.setVisible(true);
+        btnBuscarClient.setVisible(true);
+        
+        txtNomClient.setText("");
+        txtPrimerApeClient.setText("");
+        txtSegundoApeClient.setText("");
+        txtDirClient.setText("");
+        txtSaldoClient.setText("");
+        txtTelefonoClient.setText("");
+        txtRFCClient.setText("");
+        txtBuscarClient.setText("");
+    }//GEN-LAST:event_btnActualizarClientActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizarClient;
     private javax.swing.JButton btnAgregarPel;
     private javax.swing.JButton btnAgregarSer;
     private javax.swing.JButton btnBuscarClient;
@@ -1902,6 +2026,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscarPel;
     private javax.swing.JButton btnBuscarSer;
     private javax.swing.JButton btnBuscarVen;
+    private javax.swing.JButton btnCancelarClient;
     private javax.swing.JButton btnComprarVen;
     private javax.swing.JButton btnEntregarPres;
     private javax.swing.JButton btnPrestamo;
@@ -1960,6 +2085,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JLabel lbPuesto;
     private javax.swing.JLabel lblFechaActualPres;
     private javax.swing.JLabel lblHorario;
