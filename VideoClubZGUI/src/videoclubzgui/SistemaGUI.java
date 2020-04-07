@@ -26,7 +26,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     
     //Variables globales para actualizar campos
     //Clientes
-    String tmpRFCClient;
+    String tmpRFCClient, tmpRFCEmp;
     
     public void checkQueryEmp(String idAux){
         Statement stmt = null;
@@ -52,6 +52,15 @@ public class SistemaGUI extends javax.swing.JFrame {
                 txtSalarioEmp.setText(rs.getString("salario"));
                 txtHorarioEmp.setText(rs.getString("horario_emp"));
                 
+                //Actualizar botones
+                btnActualizarEmp.setVisible(true);
+                btnCancelarEmp.setVisible(true);
+                btnRegistrarEmp.setVisible(false);
+                btnBuscarEmp.setVisible(false);
+
+                //Asignar valor a variable temporal
+                tmpRFCEmp = rs.getString("id_empleado");
+ 
             }
                 
         } catch (SQLException ex) {
@@ -272,6 +281,37 @@ public class SistemaGUI extends javax.swing.JFrame {
         try {
             stmt = cnx.createStatement();
             query = "update clientes set nombres_cliente = '"+ nom+"', apellido1_cliente = '" + ap1 + "', apellido2_cliente = '" + ap2 + "', direccion_cliente = '" + dir + "', telefono_cliente = '" + tel + "', saldo_pendiente = " + saldo + " where id_cliente = '" + rfc + "'";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void updateEmp(String id,String nom,String ap1,String ap2,String pues,String tel,int sala,String hora){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+
+        try {
+            stmt = cnx.createStatement();
+            query = "update empleados set nombres_emp = '" + nom + "', apellido1_emp  = '" + ap1 + "', apellido2_emp = '" + ap2 + "', puesto = '"+ pues + "', telefono_emp = '" + tel + "', salario = " + sala + ", horario_emp = '" + hora + "' where id_empleado = '" + id + "'";
             stmt.execute(query);
             
         } catch(SQLException ex) {
@@ -734,6 +774,9 @@ public class SistemaGUI extends javax.swing.JFrame {
         btnActualizarClient.setVisible(false);
         btnCancelarClient.setVisible(false);
         
+        btnActualizarEmp.setVisible(false);
+        btnCancelarEmp.setVisible(false);
+        
         switch(perfil){
             case "Jefe":
                 panelTabs.setEnabledAt(0, true);
@@ -815,6 +858,8 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel35 = new javax.swing.JLabel();
         txtBuscarEmp = new javax.swing.JTextField();
         btnBuscarEmp = new javax.swing.JButton();
+        btnActualizarEmp = new javax.swing.JButton();
+        btnCancelarEmp = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         lblRegClientes = new javax.swing.JLabel();
         lblNomClient = new javax.swing.JLabel();
@@ -977,6 +1022,20 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         });
 
+        btnActualizarEmp.setText("Actualizar");
+        btnActualizarEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarEmpActionPerformed(evt);
+            }
+        });
+
+        btnCancelarEmp.setText("Cancelar");
+        btnCancelarEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarEmpActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -987,34 +1046,39 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(lblRegEmpleados)
                     .addComponent(lblHorario)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnRegistrarEmp)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblNom)
-                                .addComponent(lblPrimerApe)
-                                .addComponent(txtPrimerApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(textNomEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblSegundoApe)
-                                .addComponent(txtSegundoApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(33, 33, 33)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtSalarioEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblSalario)
-                                .addComponent(txtTelefonoEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblTelefono)
-                                .addComponent(lbPuesto)
-                                .addComponent(comboEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblRFC)
-                                .addComponent(txtIdEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnCancelarEmp)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel35)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtBuscarEmp))
-                            .addComponent(txtHorarioEmp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscarEmp)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel35)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtBuscarEmp))
+                                    .addComponent(txtHorarioEmp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscarEmp)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnActualizarEmp))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnRegistrarEmp)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lblNom)
+                                        .addComponent(lblPrimerApe)
+                                        .addComponent(txtPrimerApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(textNomEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblSegundoApe)
+                                        .addComponent(txtSegundoApeEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(33, 33, 33)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtSalarioEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblSalario)
+                                        .addComponent(txtTelefonoEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblTelefono)
+                                        .addComponent(lbPuesto)
+                                        .addComponent(comboEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblRFC)
+                                        .addComponent(txtIdEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addContainerGap(252, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -1060,8 +1124,11 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel35)
                     .addComponent(txtBuscarEmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarEmp))
-                .addContainerGap(182, Short.MAX_VALUE))
+                    .addComponent(btnBuscarEmp)
+                    .addComponent(btnActualizarEmp))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancelarEmp)
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Empleados", jPanel1);
@@ -1869,13 +1936,13 @@ public class SistemaGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPelActionPerformed
-        
         checkQueryPeliculas(txtBuscarPel.getText());
     }//GEN-LAST:event_btnBuscarPelActionPerformed
 
     private void btnBuscarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpActionPerformed
-        // TODO add your handling code here:
         checkQueryEmp(txtBuscarEmp.getText());
+        
+        
     }//GEN-LAST:event_btnBuscarEmpActionPerformed
 
     private void btnRegistrarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarEmpActionPerformed
@@ -2002,6 +2069,8 @@ public class SistemaGUI extends javax.swing.JFrame {
     private void btnActualizarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientActionPerformed
         updateCliente(tmpRFCClient, txtNomClient.getText(), txtPrimerApeClient.getText(), txtSegundoApeClient.getText(), txtDirClient.getText(), txtTelefonoClient.getText(), Integer.parseInt(txtSaldoClient.getText()));
         
+        tmpRFCClient = null;
+        
         btnActualizarClient.setVisible(false);
         btnCancelarClient.setVisible(false);
         btnRegistrarClient.setVisible(true);
@@ -2017,8 +2086,49 @@ public class SistemaGUI extends javax.swing.JFrame {
         txtBuscarClient.setText("");
     }//GEN-LAST:event_btnActualizarClientActionPerformed
 
+    private void btnCancelarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarEmpActionPerformed
+        tmpRFCEmp = null;
+        
+        btnActualizarEmp.setVisible(false);
+        btnCancelarEmp.setVisible(false);
+        btnRegistrarEmp.setVisible(true);
+        btnBuscarEmp.setVisible(true);
+        
+        txtIdEmp.setText("");
+        textNomEmp.setText("");
+        txtPrimerApeEmp.setText("");
+        txtSegundoApeEmp.setText("");
+        comboEmp.setSelectedItem("");
+        txtTelefonoEmp.setText("");
+        txtSalarioEmp.setText("");
+        txtHorarioEmp.setText("");
+        txtBuscarEmp.setText("");
+    }//GEN-LAST:event_btnCancelarEmpActionPerformed
+
+    private void btnActualizarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarEmpActionPerformed
+        updateEmp(tmpRFCEmp, textNomEmp.getText(), txtPrimerApeEmp.getText(), txtSegundoApeEmp.getText(), (String)comboEmp.getSelectedItem(), txtTelefonoEmp.getText(), Integer.parseInt(txtSalarioEmp.getText()), txtHorarioEmp.getText());
+        
+        tmpRFCEmp = null;
+        
+        btnActualizarEmp.setVisible(false);
+        btnCancelarEmp.setVisible(false);
+        btnRegistrarEmp.setVisible(true);
+        btnBuscarEmp.setVisible(true);
+        
+        txtIdEmp.setText("");
+        textNomEmp.setText("");
+        txtPrimerApeEmp.setText("");
+        txtSegundoApeEmp.setText("");
+        comboEmp.setSelectedItem("");
+        txtTelefonoEmp.setText("");
+        txtSalarioEmp.setText("");
+        txtHorarioEmp.setText("");
+        txtBuscarEmp.setText("");
+    }//GEN-LAST:event_btnActualizarEmpActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizarClient;
+    private javax.swing.JButton btnActualizarEmp;
     private javax.swing.JButton btnAgregarPel;
     private javax.swing.JButton btnAgregarSer;
     private javax.swing.JButton btnBuscarClient;
@@ -2027,6 +2137,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscarSer;
     private javax.swing.JButton btnBuscarVen;
     private javax.swing.JButton btnCancelarClient;
+    private javax.swing.JButton btnCancelarEmp;
     private javax.swing.JButton btnComprarVen;
     private javax.swing.JButton btnEntregarPres;
     private javax.swing.JButton btnPrestamo;

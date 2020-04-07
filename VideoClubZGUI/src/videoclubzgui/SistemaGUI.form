@@ -61,40 +61,47 @@
                           <Component id="lblRegEmpleados" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblHorario" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="btnRegistrarEmp" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="lblNom" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lblPrimerApe" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtPrimerApeEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <Component id="textNomEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <Component id="lblSegundoApe" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtSegundoApeEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtSalarioEmp" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <Component id="lblSalario" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtTelefonoEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <Component id="lblTelefono" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lbPuesto" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="comboEmp" min="-2" pref="200" max="-2" attributes="0"/>
-                                      <Component id="lblRFC" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtIdEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="btnCancelarEmp" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel35" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="txtBuscarEmp" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="jLabel35" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="txtBuscarEmp" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Component id="txtHorarioEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="btnBuscarEmp" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="btnActualizarEmp" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="txtHorarioEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                                      <Component id="btnRegistrarEmp" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="lblNom" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="lblPrimerApe" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtPrimerApeEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                              <Component id="textNomEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                              <Component id="lblSegundoApe" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtSegundoApeEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="txtSalarioEmp" min="-2" pref="200" max="-2" attributes="0"/>
+                                              <Component id="lblSalario" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtTelefonoEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                              <Component id="lblTelefono" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="lbPuesto" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="comboEmp" min="-2" pref="200" max="-2" attributes="0"/>
+                                              <Component id="lblRFC" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtIdEmp" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                  </Group>
                               </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnBuscarEmp" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="252" max="32767" attributes="0"/>
@@ -153,8 +160,11 @@
                           <Component id="jLabel35" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtBuscarEmp" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnBuscarEmp" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnActualizarEmp" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="182" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnCancelarEmp" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="153" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -283,6 +293,22 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarEmpActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnActualizarEmp">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Actualizar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarEmpActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnCancelarEmp">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cancelar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarEmpActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
