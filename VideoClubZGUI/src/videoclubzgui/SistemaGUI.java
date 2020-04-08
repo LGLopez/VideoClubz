@@ -764,6 +764,100 @@ public class SistemaGUI extends javax.swing.JFrame {
         }
     }
     
+    public void actualizarPel(String titulo,String director,String genero,int anio,int costo,int existencia_pres, int existencia_vent, int estante){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query, query2;
+        int idAux=-1;
+
+        try {
+            stmt = cnx.createStatement();           
+            query2 = "SELECT * FROM peliculas WHERE titulo_pel = '"+titulo+"'";
+            rs = stmt.executeQuery(query2);
+            
+            if(stmt.execute(query2)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "No se encontro la pelicula");
+            }
+            else{
+                idAux = Integer.parseInt(rs.getString("id_pelicula"));
+            }
+            
+            query = "update peliculas set id_pelicula = "+ idAux+", anio_pel = " + anio + ", titulo_pel = '" + titulo + "', genero_pel = '" + genero + "', costo_pel = " + costo + ", director_pel = '" + director + "', existencias_pres_pel = "+existencia_pres+", existencias_ven_pel = "+existencia_vent+", num_estant = "+estante+" where id_pelicula = " + idAux + "";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+    public void actualizarSer(String titulo,String genero,int numTemp,int anioTemp,int numCaps, int costo, int existenciaPresSer, int existenciaVenSer, int estanteria){
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query, query2;
+        int idAux=-1;
+
+        try {
+            stmt = cnx.createStatement();           
+            query2 = "SELECT * FROM series WHERE titulo_ser = '"+titulo+"'";
+            rs = stmt.executeQuery(query2);
+            
+            if(stmt.execute(query2)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "No se encontro la pelicula");
+            }
+            else{
+                idAux = Integer.parseInt(rs.getString("id_serie"));
+            }
+            
+            query = "update series set id_serie = "+ idAux+", num_temp = " + numTemp + ", anio_temp = " + anioTemp + ", num_caps = " + numCaps + ", costo_ser = " + costo + ", titulo_ser = '" + titulo + "', genero_ser = '"+genero+"', existencias_pres_ser = "+existenciaPresSer+", existencias_ven_ser = "+existenciaVenSer+", num_estant = "+estanteria+" where id_serie = " + idAux + "";
+            stmt.execute(query);
+            
+        } catch(SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+    }
+    
+
+    
     public SistemaGUI() {
         initComponents();
     }
@@ -904,6 +998,8 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         txtBuscarPel = new javax.swing.JTextField();
         btnBuscarPel = new javax.swing.JButton();
+        btnActPel = new javax.swing.JButton();
+        btnCancelPel = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         lblRegPeliculas1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -950,6 +1046,8 @@ public class SistemaGUI extends javax.swing.JFrame {
         btnBuscarSer = new javax.swing.JButton();
         jLabel24 = new javax.swing.JLabel();
         txtBuscarSer = new javax.swing.JTextField();
+        btnActSer = new javax.swing.JButton();
+        btnCancelSer = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         lblRegPeliculas3 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
@@ -1335,52 +1433,78 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         });
 
+        btnActPel.setText("Actualizar");
+        btnActPel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActPelActionPerformed(evt);
+            }
+        });
+
+        btnCancelPel.setText("Cancelar");
+        btnCancelPel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelPelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblRegPeliculas)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtTituloPel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel2))
                                 .addGap(34, 34, 34)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel14)
+                                    .addComponent(jLabel8)
                                     .addComponent(jLabel9)
                                     .addComponent(txtEstanteriaPel)
-                                    .addComponent(comboGenero, 0, 200, Short.MAX_VALUE)
-                                    .addComponent(txtBuscarPel))))
-                        .addContainerGap(251, Short.MAX_VALUE))
+                                    .addComponent(comboGenero, 0, 200, Short.MAX_VALUE)))
+                            .addComponent(jLabel5))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel8)
-                        .addGap(201, 201, 201))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnBuscarPel))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblRegPeliculas)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(txtExistenciaPresPel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                            .addComponent(txtCostoPel, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtAnioPel, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtDirectorPel, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addGap(57, 57, 57)
+                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txtBuscarPel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel14)))
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addGap(74, 74, 74)
+                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(btnRegPel)
+                                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                                        .addComponent(btnActPel)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(btnCancelPel)))))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                                    .addComponent(txtExistenciaPresPel, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCostoPel, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtAnioPel, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtDirectorPel, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRegPel)))
-                        .addGap(36, 36, 36))))
+                                .addComponent(btnBuscarPel)
+                                .addGap(102, 102, 102)))
+                        .addGap(196, 196, 196))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1404,31 +1528,34 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(txtDirectorPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtEstanteriaPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel14))
+                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAnioPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBuscarPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCostoPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnBuscarPel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtExistenciaPresPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegPel))
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(btnActPel)
+                    .addComponent(btnCancelPel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCostoPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtExistenciaPresPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBuscarPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel7))
+                    .addComponent(btnBuscarPel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtExistenciaVenPel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Peliculas", jPanel2);
@@ -1631,45 +1758,61 @@ public class SistemaGUI extends javax.swing.JFrame {
 
         jLabel24.setText("Buscar:");
 
+        btnActSer.setText("Actualizar");
+
+        btnCancelSer.setText("jButton2");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel19)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                            .addComponent(txtCostoSer, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRegSer))
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(txtTempSer, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtEpisodiosSer)
-                                    .addComponent(lblRegPeliculas2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTituloSer, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(comboGeneroSer, javax.swing.GroupLayout.Alignment.LEADING, 0, 180, Short.MAX_VALUE)
-                                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTempAnioSer, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addComponent(jLabel20))
-                            .addGap(41, 41, 41)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel24)
-                                    .addComponent(jLabel21)
-                                    .addComponent(txtExisPresSer)
-                                    .addComponent(jLabel22)
-                                    .addComponent(txtExisVenSer)
-                                    .addComponent(jLabel23)
-                                    .addComponent(txtEstanteriaSer)
-                                    .addComponent(txtBuscarSer, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
-                                .addComponent(btnBuscarSer)))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel19)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(txtTempSer, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtEpisodiosSer)
+                                                .addComponent(lblRegPeliculas2, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtTituloSer, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(comboGeneroSer, javax.swing.GroupLayout.Alignment.LEADING, 0, 180, Short.MAX_VALUE)
+                                                .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(txtTempAnioSer, javax.swing.GroupLayout.Alignment.LEADING))
+                                            .addComponent(jLabel20))
+                                        .addComponent(txtCostoSer, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel18))
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(41, 41, 41)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel24)
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(jLabel21)
+                                                .addComponent(txtExisPresSer, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                                .addComponent(jLabel22)
+                                                .addComponent(txtExisVenSer)
+                                                .addComponent(jLabel23)
+                                                .addComponent(txtEstanteriaSer))
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                                    .addComponent(btnActSer)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(btnCancelSer))
+                                                .addComponent(txtBuscarSer, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(100, 100, 100)
+                                        .addComponent(btnRegSer))))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(290, 290, 290)
+                        .addComponent(btnBuscarSer)))
                 .addContainerGap(284, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -1702,27 +1845,29 @@ public class SistemaGUI extends javax.swing.JFrame {
                     .addComponent(txtTempAnioSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtEstanteriaSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel24)
-                    .addComponent(jLabel19))
+                .addComponent(jLabel19)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEpisodiosSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBuscarSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRegSer))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel20)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTempSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnBuscarSer))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(btnActSer)
+                    .addComponent(btnCancelSer))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel18)
+                .addComponent(txtTempSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel24))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCostoSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegSer))
-                .addContainerGap(209, Short.MAX_VALUE))
+                    .addComponent(txtBuscarSer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnBuscarSer)
+                .addContainerGap(171, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Series", jPanel5);
@@ -1937,6 +2082,12 @@ public class SistemaGUI extends javax.swing.JFrame {
 
     private void btnBuscarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPelActionPerformed
         checkQueryPeliculas(txtBuscarPel.getText());
+        
+        btnActPel.setVisible(true);
+        btnCancelPel.setVisible(true);
+        btnAgregarPel.setVisible(false);
+        btnBuscarPel.setVisible(false);
+        btnRegPel.setVisible(false);
     }//GEN-LAST:event_btnBuscarPelActionPerformed
 
     private void btnBuscarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpActionPerformed
@@ -1991,6 +2142,11 @@ public class SistemaGUI extends javax.swing.JFrame {
 
     private void btnBuscarSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSerActionPerformed
         checkQuerySeries(txtBuscarSer.getText());
+        
+        btnActSer.setVisible(true);
+        btnCancelSer.setVisible(true);
+        btnRegSer.setVisible(false);
+        btnBuscarSer.setVisible(false);
     }//GEN-LAST:event_btnBuscarSerActionPerformed
 
     private void btnAgregarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPelActionPerformed
@@ -2126,7 +2282,36 @@ public class SistemaGUI extends javax.swing.JFrame {
         txtBuscarEmp.setText("");
     }//GEN-LAST:event_btnActualizarEmpActionPerformed
 
+    private void btnCancelPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelPelActionPerformed
+        // TODO add your handling code here:
+        txtTituloPel.setText("");
+        txtDirectorPel.setText("");
+        txtAnioPel.setText("");
+        txtEstanteriaPel.setText("");
+        txtCostoPel.setText("");
+        txtExistenciaPresPel.setText("");
+        txtExistenciaVenPel.setText("");
+        comboGenero.setSelectedItem("");
+        
+        btnActPel.setVisible(false);
+        btnCancelPel.setVisible(false);
+        btnBuscarPel.setVisible(true);
+        btnRegPel.setVisible(true);
+    }//GEN-LAST:event_btnCancelPelActionPerformed
+
+    private void btnActPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActPelActionPerformed
+        // TODO add your handling code here:
+        actualizarPel(txtTituloPel.getText(), txtDirectorPel.getText(), (String)comboGenero.getSelectedItem(), Integer.parseInt(txtAnioPel.getText()), Integer.parseInt(txtCostoPel.getText()), Integer.parseInt(txtExistenciaPresPel.getText()), Integer.parseInt(txtExistenciaVenPel.getText()), Integer.parseInt(txtEstanteriaPel.getText()));
+        
+        btnActPel.setVisible(false);
+        btnCancelPel.setVisible(false);
+        btnBuscarPel.setVisible(true);
+        btnRegPel.setVisible(true);
+    }//GEN-LAST:event_btnActPelActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActPel;
+    private javax.swing.JButton btnActSer;
     private javax.swing.JButton btnActualizarClient;
     private javax.swing.JButton btnActualizarEmp;
     private javax.swing.JButton btnAgregarPel;
@@ -2136,6 +2321,8 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscarPel;
     private javax.swing.JButton btnBuscarSer;
     private javax.swing.JButton btnBuscarVen;
+    private javax.swing.JButton btnCancelPel;
+    private javax.swing.JButton btnCancelSer;
     private javax.swing.JButton btnCancelarClient;
     private javax.swing.JButton btnCancelarEmp;
     private javax.swing.JButton btnComprarVen;
