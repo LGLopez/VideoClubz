@@ -33,28 +33,51 @@ public class SistemaGUI extends javax.swing.JFrame {
     String tmpRFCClient, tmpRFCEmp;
     
     public void estanteriaPeliculas(){
+        dm.clear();
         listaEstanterias.setModel(dm);
         
         Statement stmt = null;
         ResultSet rs = null;
         String query;
         
+        Statement stmtPel = null;
+        ResultSet rsPel = null;
+        String queryPel;
+        
         try {
             stmt = cnx.createStatement();
-            query = "SELECT * FROM estanteria";
+            query = "SELECT * FROM estanteria WHERE tipo = '" + "Peliculas" + "'";
             rs = stmt.executeQuery(query);
+            
+            stmtPel = cnx.createStatement();
             
             if(stmt.execute(query)){
                 rs = stmt.getResultSet();
             }
             
             if(!rs.next()){
-                JOptionPane.showMessageDialog(this, "No se encontro la pelicula");
+                JOptionPane.showMessageDialog(this, "Sin estanterias");
             }else{
                 do{
-                    dm.addElement(rs.getString("num_estant") + "--->");
+                    dm.addElement(rs.getString("num_estant") + "-------------------------" + rs.getString("rango_letras"));
                     
-                    dm.addElement("\n");
+                    //Para agregar peliculas
+                    queryPel = "SELECT * FROM peliculas WHERE num_estant = " + rs.getString("num_estant") +"";
+                    if(stmtPel.execute(queryPel)){
+                        rsPel = stmtPel.getResultSet();
+                    }
+                    while(rsPel.next()){
+                        dm.addElement("Nombre: " + rsPel.getString("titulo_pel"));
+                        dm.addElement("Director: " + rsPel.getString("director_pel"));
+                        dm.addElement("Año Lanzamiento: " + rsPel.getString("anio_pel"));
+                        dm.addElement("Genero: " + rsPel.getString("genero_pel"));
+                        dm.addElement("Costo: " + rsPel.getString("costo_pel"));
+                        dm.addElement("Existencia para venta: " + rsPel.getString("existencias_ven_pel"));
+                        dm.addElement("Existencia para renta: " + rsPel.getString("existencias_pres_pel"));
+                        dm.addElement("\n");
+                    }
+                    
+                    dm.addElement("-------------------------------------");
                 }while(rs.next());
             }
                 
@@ -77,7 +100,77 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
+    }
+    
+    public void estanteriaSeries(){
+        dm.clear();
+        listaEstanterias.setModel(dm);
         
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        Statement stmtSer = null;
+        ResultSet rsSer = null;
+        String querySer;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM estanteria WHERE tipo = '" + "Series" + "'";
+            rs = stmt.executeQuery(query);
+            
+            stmtSer = cnx.createStatement();
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "Sin estanterias");
+            }else{
+                do{
+                    dm.addElement(rs.getString("num_estant") + "--------------------------------" + rs.getString("rango_letras"));
+                    
+                    //Para agregar peliculas
+                    querySer = "SELECT * FROM series WHERE num_estant = " + rs.getString("num_estant") +"";
+                    if(stmtSer.execute(querySer)){
+                        rsSer = stmtSer.getResultSet();
+                    }
+                    while(rsSer.next()){
+                        dm.addElement("Nombre: " + rsSer.getString("titulo_ser"));
+                        dm.addElement("Genero: " + rsSer.getString("genero_ser"));
+                        dm.addElement("Año Lanzamiento: " + rsSer.getString("anio_temp"));
+                        dm.addElement("Temporada: " + rsSer.getString("num_temp"));
+                        dm.addElement("Capitulos: " + rsSer.getString("num_caps"));
+                        dm.addElement("Costo: " + rsSer.getString("costo_ser"));
+                        dm.addElement("Existencias para prestamo: " + rsSer.getString("existencias_pres_ser"));
+                        dm.addElement("Existencias para ventas: " + rsSer.getString("existencias_ven_ser"));
+                        dm.addElement("\n");
+                    }
+                    
+                    dm.addElement("-------------------------------------------");
+                }while(rs.next());
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
     }
     
     public void checkQueryEmp(String idAux){
@@ -1816,6 +1909,11 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel24.setText("Buscar:");
 
         btnActSer.setText("Actualizar");
+        btnActSer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActSerActionPerformed(evt);
+            }
+        });
 
         btnCancelSer.setText("jButton2");
 
@@ -2119,6 +2217,11 @@ public class SistemaGUI extends javax.swing.JFrame {
         });
 
         btnSerEstanteria.setText("Series");
+        btnSerEstanteria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSerEstanteriaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -2128,8 +2231,8 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(91, 91, 91)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnPelEstanteria)
                             .addComponent(btnSerEstanteria)))
@@ -2143,12 +2246,12 @@ public class SistemaGUI extends javax.swing.JFrame {
                 .addComponent(lblEstanterias)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(btnPelEstanteria)
                         .addGap(18, 18, 18)
-                        .addComponent(btnSerEstanteria)))
-                .addContainerGap(185, Short.MAX_VALUE))
+                        .addComponent(btnSerEstanteria))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Estanterias", jPanel7);
@@ -2403,6 +2506,14 @@ public class SistemaGUI extends javax.swing.JFrame {
     private void btnPelEstanteriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPelEstanteriaActionPerformed
         estanteriaPeliculas();
     }//GEN-LAST:event_btnPelEstanteriaActionPerformed
+
+    private void btnSerEstanteriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSerEstanteriaActionPerformed
+        estanteriaSeries();
+    }//GEN-LAST:event_btnSerEstanteriaActionPerformed
+
+    private void btnActSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActSerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnActSerActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActPel;
