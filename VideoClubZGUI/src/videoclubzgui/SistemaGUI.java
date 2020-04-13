@@ -32,6 +32,90 @@ public class SistemaGUI extends javax.swing.JFrame {
     //Clientes
     String tmpRFCClient, tmpRFCEmp;
     
+    public boolean checkExist(int choiceVP,int choiceSP, String idToSearch){
+        //ChoiceSP 1 = peliculas, 2 = series
+        //choiceVP 1 = Venta, 2 = Prestamo
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        //Variables para revisar existencia
+        int verExistencia = 0;
+        
+        try {
+            stmt = cnx.createStatement();
+            //Revisar si existe
+            if(choiceSP==1){
+                query = "SELECT * FROM peliculas WHERE id_pelicula = '"+idToSearch+"'";
+            }
+            else{
+                query = "SELECT * FROM series WHERE id_series = '"+idToSearch+"'";
+            }
+                
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                //Avisar si no existe
+                if(choiceSP==1){
+                    JOptionPane.showMessageDialog(this, "No se encontro la pelicula");
+                    return false;
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "No se encontro la serie");
+                    return false;
+                }
+                    
+            }else{
+                do{
+                    if(choiceVP==1){//Revisar la existencia venta
+                        if(choiceSP==1){//Revisar existencia de pelicula
+                            verExistencia = Integer.parseInt(rs.getString("existencias_ven_pel"));
+                            
+                            if(verExistencia>=1)
+                                return true;
+                            else{
+                                JOptionPane.showMessageDialog(this, "No hay existencias de la pelicula");
+                                return false;
+                            }
+                                
+                        }
+                        else{//Revisar existencia serie
+                            
+                        }
+                    }
+                    else{ //Revisar existencia prestamo
+                        
+                    }
+                    
+                }while(rs.next());
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+        return false;
+    }
+    
     public void estanteriaPeliculas(){
         dm.clear();
         listaEstanterias.setModel(dm);
@@ -1103,9 +1187,7 @@ public class SistemaGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Actualización Exitosa!");
         }
     }  //CHECK
-    
 
-    
     public SistemaGUI() {
         initComponents();
     }
@@ -2204,60 +2286,57 @@ public class SistemaGUI extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                        .addGap(246, 246, 246)
-                        .addComponent(jLabel34)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtRFCEmpVen)
+                            .addComponent(txtCostoVen)
+                            .addComponent(comboPagoVen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtRFCClientVen)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtRFCEmpVen)
-                                    .addComponent(txtCostoVen)
-                                    .addComponent(comboPagoVen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtRFCClientVen)
-                                    .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel25)
-                                            .addComponent(lblRegPeliculas3)
-                                            .addComponent(jLabel26)
-                                            .addComponent(jLabel28))
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel31)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel29)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFechaVen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(jLabel25)
+                                    .addComponent(lblRegPeliculas3)
+                                    .addComponent(jLabel26)
+                                    .addComponent(jLabel28))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel31)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtFechaVen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel34)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel27)
-                                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(txtPelVen, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel37, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(txtSerieVen)
-                                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                                .addComponent(btnBuscarVen)
-                                                .addGap(55, 55, 55))))
-                                    .addGap(52, 52, 52))
-                                .addGroup(jPanel6Layout.createSequentialGroup()
-                                    .addGap(3, 3, 3)
-                                    .addComponent(txtBuscarVen, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(40, 40, 40)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                                .addComponent(btnAgregarPel)
-                                .addGap(115, 115, 115))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnAgregarSer)
-                                    .addComponent(btnComprarVen))
-                                .addGap(104, 104, 104))))))
+                                    .addComponent(jLabel27)
+                                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(txtPelVen, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel37, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtSerieVen)
+                                        .addGroup(jPanel6Layout.createSequentialGroup()
+                                            .addComponent(btnBuscarVen)
+                                            .addGap(55, 55, 55))))
+                                .addGap(52, 52, 52))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(3, 3, 3)
+                                .addComponent(txtBuscarVen, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(btnAgregarPel)
+                        .addGap(115, 115, 115))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAgregarSer)
+                            .addComponent(btnComprarVen))
+                        .addGap(104, 104, 104))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2299,11 +2378,11 @@ public class SistemaGUI extends javax.swing.JFrame {
                         .addComponent(jLabel31)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(comboPagoVen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addComponent(jLabel34)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(25, 25, 25)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtBuscarVen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtBuscarVen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel34))
                             .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel29)
                                 .addComponent(txtFechaVen)))
@@ -2455,13 +2534,16 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarSerActionPerformed
 
     private void btnAgregarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPelActionPerformed
-        // TODO add your handling code here:
         Integer aux = Integer.parseInt(txtPelVen.getText());
-        agregarPel[iP] = aux;
-        iP++;
-        for(int i=0; i<iP; i++){
-            System.out.println(agregarPel[i]);
+        
+        if(checkExist(1,1, txtPelVen.getText())){
+            agregarPel[iP] = aux;
+            iP++;
+            for(int i=0; i<iP; i++){
+                System.out.println(agregarPel[i]);
+            }
         }
+            
     }//GEN-LAST:event_btnAgregarPelActionPerformed
 
     private void btnAgregarSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarSerActionPerformed
@@ -2475,7 +2557,6 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarSerActionPerformed
 
     private void btnComprarVenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarVenActionPerformed
-        // TODO add your handling code here:
         comprar((String)comboPagoVen.getSelectedItem(), txtCostoVen.getText(), txtRFCClientVen.getText(), txtRFCEmpVen.getText());
     }//GEN-LAST:event_btnComprarVenActionPerformed
 
