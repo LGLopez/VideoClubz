@@ -1016,6 +1016,9 @@ public class SistemaGUI extends javax.swing.JFrame {
         btnActualizarEmp.setVisible(false);
         btnCancelarEmp.setVisible(false);
         
+        btnActPel.setVisible(false);
+        btnCancelPel.setVisible(false);
+        
         switch(perfil){
             case "Jefe":
                 panelTabs.setEnabledAt(0, true);
@@ -2494,7 +2497,6 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelPelActionPerformed
 
     private void btnActPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActPelActionPerformed
-        // TODO add your handling code here:
         actualizarPel(txtTituloPel.getText(), txtDirectorPel.getText(), (String)comboGenero.getSelectedItem(), Integer.parseInt(txtAnioPel.getText()), Integer.parseInt(txtCostoPel.getText()), Integer.parseInt(txtExistenciaPresPel.getText()), Integer.parseInt(txtExistenciaVenPel.getText()), Integer.parseInt(txtEstanteriaPel.getText()));
         
         btnActPel.setVisible(false);
