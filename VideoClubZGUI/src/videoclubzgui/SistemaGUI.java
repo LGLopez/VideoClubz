@@ -22,7 +22,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     //Declaracion de datos de conexión a BD
     private static final String driver="com.mysql.jdbc.Driver";
     private static final String user="root";
-    private static final String pass="655361";
+    private static final String pass="12345";
     private static final String url="jdbc:mysql://localhost:3306/videoclubz?useTimezone=true&serverTimezone=UTC";
     
     //Modelo para lista estanterias
@@ -177,6 +177,7 @@ public class SistemaGUI extends javax.swing.JFrame {
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
         
         try {
             stmt = cnx.createStatement();
@@ -187,7 +188,8 @@ public class SistemaGUI extends javax.swing.JFrame {
                 rs = stmt.getResultSet();
             }
             
-            while(rs.next()){
+           while(rs.next()){
+                aux = true;
                 txtIdEmp.setText(rs.getString("id_empleado"));
                 textNomEmp.setText(rs.getString("nombres_emp"));
                 txtPrimerApeEmp.setText(rs.getString("apellido1_emp"));
@@ -196,7 +198,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 txtTelefonoEmp.setText(rs.getString("telefono_emp"));
                 txtSalarioEmp.setText(rs.getString("salario"));
                 txtHorarioEmp.setText(rs.getString("horario_emp"));
-                
+
                 //Actualizar botones
                 btnActualizarEmp.setVisible(true);
                 btnCancelarEmp.setVisible(true);
@@ -205,9 +207,7 @@ public class SistemaGUI extends javax.swing.JFrame {
 
                 //Asignar valor a variable temporal
                 tmpRFCEmp = rs.getString("id_empleado");
- 
             }
-                
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
@@ -227,13 +227,16 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-        
-    }
+        if(!aux){
+            JOptionPane.showMessageDialog(this, "No se encontro el empleado.");
+        }
+    } //CHECK
     
     public void checkQueryCli(String rfc){
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
         
         try {
             stmt = cnx.createStatement();
@@ -245,6 +248,7 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
             
             while(rs.next()){
+                aux= true;
                 //Recoger datos y poner  en text
                 txtRFCClient.setText(rs.getString("id_cliente"));
                 txtNomClient.setText(rs.getString("nombres_cliente"));
@@ -253,10 +257,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 txtDirClient.setText (rs.getString("direccion_cliente"));
                 txtTelefonoClient.setText(rs.getString("telefono_cliente"));
                 txtSaldoClient.setText(rs.getString("saldo_pendiente"));
-                
+
                 //Asignar valores a variables temp
                 tmpRFCClient = rs.getString("id_cliente");
-                
+
                 //Actualizar botones
                 btnActualizarClient.setVisible(true);
                 btnCancelarClient.setVisible(true);
@@ -283,7 +287,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(!aux){
+            JOptionPane.showMessageDialog(this, "No se encontro el cliente.");
+        }
+    } //CHECK
     
     public void checkQueryPeliculas(String titulo){
         Statement stmt = null;
@@ -333,7 +340,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+    } //CHECK
     
     public void checkQuerySeries(String titulo){
         Statement stmt = null;
@@ -385,22 +392,25 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+    } //CHECK
     
     public void insertEmpleado(String id,String nom,String ap1,String ap2,String pues,String tel,String sala,String hora) throws SQLException{
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
         
         try {
             stmt = cnx.createStatement();
             query = "INSERT INTO empleados VALUES ('"+id+"','"+nom+"','"+ap1+"','"+ap2+"','"+pues+"','"+tel+"',"+sala+",'"+hora+"')";
             stmt.execute(query);
-            
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -416,22 +426,38 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Registro Exitoso!");
+            
+            //Poner textos en blanco
+            txtIdEmp.setText("");
+            textNomEmp.setText("");
+            txtPrimerApeEmp.setText("");
+            txtSegundoApeEmp.setText("");
+            comboEmp.setSelectedItem("");
+            txtTelefonoEmp.setText("");
+            txtSalarioEmp.setText("");
+            txtHorarioEmp.setText("");
+        }
+    } //CHECK
     
     public void updateCliente(String rfc, String nom,String ap1,String ap2,String dir,String tel,Integer saldo){
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();
             query = "update clientes set nombres_cliente = '"+ nom+"', apellido1_cliente = '" + ap1 + "', apellido2_cliente = '" + ap2 + "', direccion_cliente = '" + dir + "', telefono_cliente = '" + tel + "', saldo_pendiente = " + saldo + " where id_cliente = '" + rfc + "'";
             stmt.execute(query);
-            
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -447,22 +473,28 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Actualización Exitosa!");
+        }
+    } //CHECK
     
     public void updateEmp(String id,String nom,String ap1,String ap2,String pues,String tel,int sala,String hora){
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();
             query = "update empleados set nombres_emp = '" + nom + "', apellido1_emp  = '" + ap1 + "', apellido2_emp = '" + ap2 + "', puesto = '"+ pues + "', telefono_emp = '" + tel + "', salario = " + sala + ", horario_emp = '" + hora + "' where id_empleado = '" + id + "'";
             stmt.execute(query);
-            
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -478,22 +510,28 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Actualización Exitosa!");
+        }
+    } //CHECK
     
     public void insertCliente(String rfc,String nom,String ap1,String ap2,String dir,String tel,Integer saldo){
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();
             query = "INSERT INTO clientes VALUES ('"+rfc+"','"+nom+"','"+ap1+"','"+ap2+"','"+dir+"','"+tel+"',"+saldo+")";
             stmt.execute(query);
-            
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -509,22 +547,37 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Registro Exitoso!");
+            
+            //Poner textos en blanco
+            txtRFCClient.setText("");
+            txtNomClient.setText("");
+            txtPrimerApeClient.setText("");
+            txtSegundoApeClient.setText("");
+            txtDirClient.setText ("");
+            txtTelefonoClient.setText("");
+            txtSaldoClient.setText("");
+        }
+    } //CHECK
     
     public void insertPelicula(String titulo,String director,String genero,int anio,int costo,int existencia_pres, int existencia_vent, int estante){
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();
             query = "INSERT INTO peliculas(anio_pel, titulo_pel, genero_pel, costo_pel, director_pel, existencias_pres_pel, existencias_ven_pel, num_estant) VALUES ("+anio+",'"+titulo+"','"+genero+"',"+costo+",'"+director+"',"+existencia_pres+","+existencia_vent+","+estante+")";
             stmt.execute(query);
-            
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -540,22 +593,38 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Registro Exitoso!");
+            
+            //Poner textos en blanco
+            txtTituloPel.setText("");
+            txtDirectorPel.setText("");
+            txtAnioPel.setText("");
+            txtEstanteriaPel.setText("");
+            txtCostoPel.setText("");
+            txtExistenciaPresPel.setText("");
+            txtExistenciaVenPel.setText("");
+            comboGenero.setSelectedItem("");
+        }
+    } //CHECK
     
     public void insertSerie(String titulo,String genero,int numTemp,int anioTemp,int numCaps, int costo, int existenciaPresSer, int existenciaVenSer, int estanteria){
         Statement stmt = null;
         ResultSet rs = null;
         String query;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();
             query = "INSERT INTO series(num_temp, anio_temp, num_caps, costo_ser, titulo_ser, genero_ser, existencias_pres_ser, existencias_ven_ser, num_estant) VALUES ("+numTemp+","+anioTemp+","+numCaps+","+costo+",'"+titulo+"','"+genero+"',"+existenciaPresSer+","+existenciaVenSer+ "," + estanteria +")";
             stmt.execute(query);
-            
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -571,7 +640,21 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Registro Exitoso!");
+            
+            //Poner textos en blanco
+            txtTituloSer.setText("");
+            comboGeneroSer.setSelectedItem("");
+            txtTempAnioSer.setText("");
+            txtEpisodiosSer.setText("");
+            txtTempSer.setText("");
+            txtCostoSer.setText("");
+            txtExisPresSer.setText("");
+            txtExisVenSer.setText("");
+            txtEstanteriaSer.setText("");
+        }
+    } //CHECK
     
     public void comprar(String pago, String costo, String id_cli, String id_emp){
         Statement stmt = null;
@@ -611,9 +694,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 }
                 
             } catch(SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -663,9 +747,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt.execute(query3);
                 
             } catch(SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -718,9 +803,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt.execute(query3);
                 
             } catch(SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -781,9 +867,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 }
                 
             } catch(SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -833,9 +920,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt.execute(query3);
                 
             } catch(SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -882,9 +970,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt.execute(query3);
                 
             } catch(SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -909,11 +998,12 @@ public class SistemaGUI extends javax.swing.JFrame {
         }
     }
     
-    public void actualizarPel(String titulo,String director,String genero,int anio,int costo,int existencia_pres, int existencia_vent, int estante){
+    public void actualizarPel(String titulo,String director,String genero,int anio,int costo,int existencia_pres, int existencia_vent, int estante){  //CHECK
         Statement stmt = null;
         ResultSet rs = null;
         String query, query2;
         int idAux=-1;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();           
@@ -934,10 +1024,13 @@ public class SistemaGUI extends javax.swing.JFrame {
             query = "update peliculas set id_pelicula = "+ idAux+", anio_pel = " + anio + ", titulo_pel = '" + titulo + "', genero_pel = '" + genero + "', costo_pel = " + costo + ", director_pel = '" + director + "', existencias_pres_pel = "+existencia_pres+", existencias_ven_pel = "+existencia_vent+", num_estant = "+estante+" where id_pelicula = " + idAux + "";
             stmt.execute(query);
             
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -953,13 +1046,17 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Actualización Exitosa!");
+        }
+    } //CHECK
     
     public void actualizarSer(String titulo,String genero,int numTemp,int anioTemp,int numCaps, int costo, int existenciaPresSer, int existenciaVenSer, int estanteria){
         Statement stmt = null;
         ResultSet rs = null;
         String query, query2;
         int idAux=-1;
+        Boolean aux = false;
 
         try {
             stmt = cnx.createStatement();           
@@ -980,10 +1077,13 @@ public class SistemaGUI extends javax.swing.JFrame {
             query = "update series set id_serie = "+ idAux+", num_temp = " + numTemp + ", anio_temp = " + anioTemp + ", num_caps = " + numCaps + ", costo_ser = " + costo + ", titulo_ser = '" + titulo + "', genero_ser = '"+genero+"', existencias_pres_ser = "+existenciaPresSer+", existencias_ven_ser = "+existenciaVenSer+", num_estant = "+estanteria+" where id_serie = " + idAux + "";
             stmt.execute(query);
             
+            aux = true;
         } catch(SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            aux = false;
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -999,7 +1099,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt = null;
             }
         }
-    }
+        if(aux){
+            JOptionPane.showMessageDialog(this, "Actualización Exitosa!");
+        }
+    }  //CHECK
     
 
     
@@ -1918,7 +2021,12 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         });
 
-        btnCancelSer.setText("jButton2");
+        btnCancelSer.setText("Cancelar");
+        btnCancelSer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelSerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -2276,7 +2384,7 @@ public class SistemaGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void btnBuscarPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPelActionPerformed
         checkQueryPeliculas(txtBuscarPel.getText());
         
@@ -2420,23 +2528,30 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarClientActionPerformed
 
     private void btnActualizarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientActionPerformed
-        updateCliente(tmpRFCClient, txtNomClient.getText(), txtPrimerApeClient.getText(), txtSegundoApeClient.getText(), txtDirClient.getText(), txtTelefonoClient.getText(), Integer.parseInt(txtSaldoClient.getText()));
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Estas seguro de actualizar los siguientes datos?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if(opcion==0){
+            updateCliente(tmpRFCClient, txtNomClient.getText(), txtPrimerApeClient.getText(), txtSegundoApeClient.getText(), txtDirClient.getText(), txtTelefonoClient.getText(), Integer.parseInt(txtSaldoClient.getText()));
         
-        tmpRFCClient = null;
+            tmpRFCClient = null;
+
+            btnActualizarClient.setVisible(false);
+            btnCancelarClient.setVisible(false);
+            btnRegistrarClient.setVisible(true);
+            btnBuscarClient.setVisible(true);
+
+            /*txtNomClient.setText("");
+            txtPrimerApeClient.setText("");
+            txtSegundoApeClient.setText("");
+            txtDirClient.setText("");
+            txtSaldoClient.setText("");
+            txtTelefonoClient.setText("");
+            txtRFCClient.setText("");
+            txtBuscarClient.setText("");*/
+        }
+        else{
+            
+        }
         
-        btnActualizarClient.setVisible(false);
-        btnCancelarClient.setVisible(false);
-        btnRegistrarClient.setVisible(true);
-        btnBuscarClient.setVisible(true);
-        
-        txtNomClient.setText("");
-        txtPrimerApeClient.setText("");
-        txtSegundoApeClient.setText("");
-        txtDirClient.setText("");
-        txtSaldoClient.setText("");
-        txtTelefonoClient.setText("");
-        txtRFCClient.setText("");
-        txtBuscarClient.setText("");
     }//GEN-LAST:event_btnActualizarClientActionPerformed
 
     private void btnCancelarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarEmpActionPerformed
@@ -2459,24 +2574,30 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarEmpActionPerformed
 
     private void btnActualizarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarEmpActionPerformed
-        updateEmp(tmpRFCEmp, textNomEmp.getText(), txtPrimerApeEmp.getText(), txtSegundoApeEmp.getText(), (String)comboEmp.getSelectedItem(), txtTelefonoEmp.getText(), Integer.parseInt(txtSalarioEmp.getText()), txtHorarioEmp.getText());
-        
-        tmpRFCEmp = null;
-        
-        btnActualizarEmp.setVisible(false);
-        btnCancelarEmp.setVisible(false);
-        btnRegistrarEmp.setVisible(true);
-        btnBuscarEmp.setVisible(true);
-        
-        txtIdEmp.setText("");
-        textNomEmp.setText("");
-        txtPrimerApeEmp.setText("");
-        txtSegundoApeEmp.setText("");
-        comboEmp.setSelectedItem("");
-        txtTelefonoEmp.setText("");
-        txtSalarioEmp.setText("");
-        txtHorarioEmp.setText("");
-        txtBuscarEmp.setText("");
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Estas seguro de actualizar los siguientes datos?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if(opcion==0){
+            updateEmp(tmpRFCEmp, textNomEmp.getText(), txtPrimerApeEmp.getText(), txtSegundoApeEmp.getText(), (String)comboEmp.getSelectedItem(), txtTelefonoEmp.getText(), Integer.parseInt(txtSalarioEmp.getText()), txtHorarioEmp.getText());
+
+            tmpRFCEmp = null;
+
+            btnActualizarEmp.setVisible(false);
+            btnCancelarEmp.setVisible(false);
+            btnRegistrarEmp.setVisible(true);
+            btnBuscarEmp.setVisible(true);
+
+            /*txtIdEmp.setText("");
+            textNomEmp.setText("");
+            txtPrimerApeEmp.setText("");
+            txtSegundoApeEmp.setText("");
+            comboEmp.setSelectedItem("");
+            txtTelefonoEmp.setText("");
+            txtSalarioEmp.setText("");
+            txtHorarioEmp.setText("");
+            txtBuscarEmp.setText("");*/
+        }
+        else{
+            
+        }
     }//GEN-LAST:event_btnActualizarEmpActionPerformed
 
     private void btnCancelPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelPelActionPerformed
@@ -2497,12 +2618,15 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelPelActionPerformed
 
     private void btnActPelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActPelActionPerformed
-        actualizarPel(txtTituloPel.getText(), txtDirectorPel.getText(), (String)comboGenero.getSelectedItem(), Integer.parseInt(txtAnioPel.getText()), Integer.parseInt(txtCostoPel.getText()), Integer.parseInt(txtExistenciaPresPel.getText()), Integer.parseInt(txtExistenciaVenPel.getText()), Integer.parseInt(txtEstanteriaPel.getText()));
-        
-        btnActPel.setVisible(false);
-        btnCancelPel.setVisible(false);
-        btnBuscarPel.setVisible(true);
-        btnRegPel.setVisible(true);
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Estas seguro de actualizar los siguientes datos?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if(opcion==0){
+            actualizarPel(txtTituloPel.getText(), txtDirectorPel.getText(), (String)comboGenero.getSelectedItem(), Integer.parseInt(txtAnioPel.getText()), Integer.parseInt(txtCostoPel.getText()), Integer.parseInt(txtExistenciaPresPel.getText()), Integer.parseInt(txtExistenciaVenPel.getText()), Integer.parseInt(txtEstanteriaPel.getText()));
+
+            btnActPel.setVisible(false);
+            btnCancelPel.setVisible(false);
+            btnBuscarPel.setVisible(true);
+            btnRegPel.setVisible(true);
+        }
     }//GEN-LAST:event_btnActPelActionPerformed
 
     private void btnPelEstanteriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPelEstanteriaActionPerformed
@@ -2514,8 +2638,24 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSerEstanteriaActionPerformed
 
     private void btnActSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActSerActionPerformed
-        // TODO add your handling code here:
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Estas seguro de actualizar los siguientes datos?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if(opcion==0){
+            actualizarSer(txtTituloSer.getText(), (String)comboGeneroSer.getSelectedItem(), Integer.parseInt(txtTempSer.getText()), Integer.parseInt(txtTempAnioSer.getText()), Integer.parseInt(txtEpisodiosSer.getText()), Integer.parseInt(txtCostoSer.getText()), Integer.parseInt(txtExisPresSer.getText()), Integer.parseInt(txtExisVenSer.getText()), Integer.parseInt(txtEstanteriaSer.getText()));
+
+            btnActSer.setVisible(false);
+            btnCancelSer.setVisible(false);
+            btnBuscarSer.setVisible(true);
+            btnRegSer.setVisible(true);
+        }
     }//GEN-LAST:event_btnActSerActionPerformed
+
+    private void btnCancelSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelSerActionPerformed
+        // TODO add your handling code here:
+        btnActSer.setVisible(false);
+        btnCancelSer.setVisible(false);
+        btnBuscarSer.setVisible(true);
+        btnRegSer.setVisible(true);
+    }//GEN-LAST:event_btnCancelSerActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActPel;
