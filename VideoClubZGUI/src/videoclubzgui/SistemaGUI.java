@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 public class SistemaGUI extends javax.swing.JFrame {
@@ -21,12 +22,63 @@ public class SistemaGUI extends javax.swing.JFrame {
     //Declaracion de datos de conexión a BD
     private static final String driver="com.mysql.jdbc.Driver";
     private static final String user="root";
-    private static final String pass="12345";
+    private static final String pass="655361";
     private static final String url="jdbc:mysql://localhost:3306/videoclubz?useTimezone=true&serverTimezone=UTC";
+    
+    //Modelo para lista estanterias
+    DefaultListModel dm = new DefaultListModel();
     
     //Variables globales para actualizar campos
     //Clientes
     String tmpRFCClient, tmpRFCEmp;
+    
+    public void estanteriaPeliculas(){
+        listaEstanterias.setModel(dm);
+        
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM estanteria";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "No se encontro la pelicula");
+            }else{
+                do{
+                    dm.addElement(rs.getString("num_estant") + "--->");
+                    
+                    dm.addElement("\n");
+                }while(rs.next());
+            }
+                
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+        
+    }
     
     public void checkQueryEmp(String idAux){
         Statement stmt = null;
@@ -1071,6 +1123,11 @@ public class SistemaGUI extends javax.swing.JFrame {
         txtSerieVen = new javax.swing.JTextField();
         btnAgregarSer = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listaEstanterias = new javax.swing.JList<>();
+        lblEstanterias = new javax.swing.JLabel();
+        btnPelEstanteria = new javax.swing.JButton();
+        btnSerEstanteria = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -2049,15 +2106,49 @@ public class SistemaGUI extends javax.swing.JFrame {
 
         panelTabs.addTab("Venta", jPanel6);
 
+        jScrollPane1.setViewportView(listaEstanterias);
+
+        lblEstanterias.setFont(new java.awt.Font("Yu Gothic Medium", 0, 36)); // NOI18N
+        lblEstanterias.setText("Estanterias");
+
+        btnPelEstanteria.setText("Peliculas");
+        btnPelEstanteria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPelEstanteriaActionPerformed(evt);
+            }
+        });
+
+        btnSerEstanteria.setText("Series");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 695, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(91, 91, 91)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnPelEstanteria)
+                            .addComponent(btnSerEstanteria)))
+                    .addComponent(lblEstanterias))
+                .addContainerGap(272, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 572, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblEstanterias)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(btnPelEstanteria)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSerEstanteria)))
+                .addContainerGap(185, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Estanterias", jPanel7);
@@ -2309,6 +2400,10 @@ public class SistemaGUI extends javax.swing.JFrame {
         btnRegPel.setVisible(true);
     }//GEN-LAST:event_btnActPelActionPerformed
 
+    private void btnPelEstanteriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPelEstanteriaActionPerformed
+        estanteriaPeliculas();
+    }//GEN-LAST:event_btnPelEstanteriaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActPel;
     private javax.swing.JButton btnActSer;
@@ -2327,11 +2422,13 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelarEmp;
     private javax.swing.JButton btnComprarVen;
     private javax.swing.JButton btnEntregarPres;
+    private javax.swing.JButton btnPelEstanteria;
     private javax.swing.JButton btnPrestamo;
     private javax.swing.JButton btnRegPel;
     private javax.swing.JButton btnRegSer;
     private javax.swing.JButton btnRegistrarClient;
     private javax.swing.JButton btnRegistrarEmp;
+    private javax.swing.JButton btnSerEstanteria;
     private javax.swing.JButton butAgregarPel;
     private javax.swing.JButton butAgregarSer;
     private javax.swing.JComboBox<String> comboEmp;
@@ -2384,7 +2481,9 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbPuesto;
+    private javax.swing.JLabel lblEstanterias;
     private javax.swing.JLabel lblFechaActualPres;
     private javax.swing.JLabel lblHorario;
     private javax.swing.JLabel lblNom;
@@ -2405,6 +2504,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lblSegundoApeClient;
     private javax.swing.JLabel lblTelefono;
     private javax.swing.JLabel lblTelefonoClient;
+    private javax.swing.JList<String> listaEstanterias;
     private javax.swing.JTabbedPane panelTabs;
     private javax.swing.JTextField textNomEmp;
     private javax.swing.JTextField txtAnioPel;
