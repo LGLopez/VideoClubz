@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
@@ -57,9 +59,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 }
 
             } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -139,9 +142,10 @@ public class SistemaGUI extends javax.swing.JFrame {
                 }
 
             } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
-                System.out.println("VendorError: " + ex.getErrorCode());
+                System.out.println("VendorError: " + ex.getErrorCode());*/
             }
             finally{
                 if(rs!=null){
@@ -247,7 +251,6 @@ public class SistemaGUI extends javax.swing.JFrame {
                                 JOptionPane.showMessageDialog(this, "No hay existencias de la pelicula");
                                 return false;
                             }
-                                
                         }
                         else{//Revisar existencia serie
                             
@@ -261,9 +264,10 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
                 
         } catch (SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -333,9 +337,10 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
                 
         } catch (SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -405,9 +410,10 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
                 
         } catch (SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
         }
         finally{
             if(rs!=null){
@@ -1020,7 +1026,7 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         }
         if(i==iP){
-            for(int x=0; x<iP; x++){
+            for(int x=0; x<100; x++){
                 agregarPel[x] = -1;
             }
             iP=0;
@@ -1076,14 +1082,14 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
         }
         if(i==iS){
-            for(int x=0; x<iS; x++){
+            for(int x=0; x<100; x++){
                 agregarSer[x] = -1;
             }
             iS=0;
         }
     }
     
-    public void prestamo(String fechaEst, String pago, String id_cli){
+    public void prestamo(String fechaEst, String pago, String id_cli, Integer costo){
         Statement stmt = null;
         ResultSet rs = null;
         String query, query2;
@@ -1099,9 +1105,9 @@ public class SistemaGUI extends javax.swing.JFrame {
         if(agregarSer[0]>0 || agregarPel[0]>0){
             try {
                 stmt = cnx.createStatement();
-                query = "insert into prestamo (fecha_entrega_est, fecha_inicio, metodo_pago_pres,id_cliente) values('"+fechaEst+"', '"+fechaActual+"', '"+pago+"', '"+id_cli+"')";
+                query = "insert into prestamo (fecha_entrega_est, fecha_inicio, metodo_pago_pres,id_cliente,costo_dia) values('"+fechaEst+"', '"+fechaActual+"', '"+pago+"', '"+id_cli+"', "+costo+")";
                 stmt.execute(query);
-                query2 = "select id_prestamo from prestamo where  fecha_inicio = '"+fechaActual+"' and metodo_pago_pres = '"+pago+"' and fecha_entrega_est = '"+fechaEst+"' and id_cliente = '"+id_cli+"'";
+                query2 = "select id_prestamo from prestamo where  fecha_inicio = '"+fechaActual+"' and metodo_pago_pres = '"+pago+"' and fecha_entrega_est = '"+fechaEst+"' and id_cliente = '"+id_cli+"' and costo_dia = "+costo+"";
                 rs = stmt.executeQuery(query2);
                 
                 if(stmt.execute(query2)){
@@ -1172,7 +1178,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                 stmt.execute(query3);
                 
             } catch(SQLException ex) {
-                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error en el prestamo de peliculas.", JOptionPane.WARNING_MESSAGE);
                 /*System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
                 System.out.println("VendorError: " + ex.getErrorCode());*/
@@ -1191,6 +1197,12 @@ public class SistemaGUI extends javax.swing.JFrame {
                     stmt = null;
                 }
             }
+        }
+        if(i==iP){
+            for(int x=0; x<100; x++){
+                agregarPel[x] = -1;
+            }
+            iP=0;
         }
     }
     
@@ -1211,7 +1223,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                     rs = stmt.getResultSet();
                 }
                 if(rs.next()){
-                    existencias = Integer.parseInt(rs.getString("existencias_prest_ser"));
+                    existencias = Integer.parseInt(rs.getString("existencias_pres_ser"));
                 }
                 
                 existencias--;
@@ -1242,8 +1254,8 @@ public class SistemaGUI extends javax.swing.JFrame {
                 }
             }
         }
-        if(i==iS){
-            for(int x=0; x<iS; x++){
+        if(i>=iS){
+            for(int x=0; x<100; x++){
                 agregarSer[x] = -1;
             }
             iS=0;
@@ -1355,6 +1367,166 @@ public class SistemaGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Actualización Exitosa!");
         }
     }  //CHECK
+    
+    public void checkQueryPres(Integer id) throws ParseException{
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query, query2;
+        Boolean aux = false;
+        
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM prestamo WHERE id_prestamo = "+id+"";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            while(rs.next()){
+                aux= true;
+                if(rs.getString("fecha_entrega") != null){
+                    String fechaEntrega = rs.getString("fecha_entrega");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //Creamos una instancia nueva, para convertir una cadena a Date.
+
+                    java.util.Date fechaEst;
+                    java.util.Date fechaInicio;
+                    java.util.Date fechaEntregaReal=dateFormat.parse(fechaEntrega);  //Se convierte de SimpleDateFormat, a Date
+                    
+                    //Verificar que no se paso de la fecha de entrega
+                    fechaEst=dateFormat.parse(rs.getString("fecha_entrega_est"));
+                    fechaInicio=dateFormat.parse(rs.getString("fecha_inicio"));
+                    //Con el metodo getTime() conseguimos la fecha en milisegundos, y despues las convertimos a dias.
+                    int diasAtrasados=(int) ((fechaEntregaReal.getTime()-fechaEst.getTime())/86400000);  //Obtenemos los días atrasados.
+                    int dias = (int) ((fechaEntregaReal.getTime() - fechaInicio.getTime())/86400000); //Obtenemos cuantos días tardo en entregar
+                    int costoDia = Integer.parseInt(rs.getString("costo_dia"));
+                    int total=0;
+                    if(diasAtrasados>0){
+                        total = costoDia * (dias-diasAtrasados);
+                        total += (costoDia*2) * (diasAtrasados);
+                    }
+                    else{
+                        total = costoDia * dias;
+                    }
+                    lblFechaPres.setText(fechaEntrega);
+                    lblCostoTotal.setText(String.valueOf(total));
+                }
+                else{
+                    txtClientePres.setText(rs.getString("id_cliente"));
+                    comboPagoPres.setSelectedItem(rs.getString("metodo_pago_pres"));
+                    txtFechaEstPres.setText(rs.getString("fecha_entrega_est"));
+                    txtFechaInicio.setText(rs.getString("fecha_inicio"));
+                    txtCostoDia.setText (rs.getString("costo_dia"));
+                    lblFechaPres.setText(rs.getString("fecha_entrega"));
+
+                
+                    lblCostoTotal.setText(String.valueOf(0));
+                }
+                //Recoger datos y poner  en text
+                
+            }
+                
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+        if(!aux){
+            JOptionPane.showMessageDialog(this, "No se encontro el id del prestamo.");
+        }
+    }
+    
+    public void devolverPrestamo(Integer id) throws ParseException{
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query, query2;
+        Boolean aux = false;
+        
+        Calendar fecha = new GregorianCalendar();
+        int anio = fecha.get(Calendar.YEAR);
+        int mes = fecha.get(Calendar.MONTH);
+        int dia = fecha.get(Calendar.DAY_OF_MONTH);
+        String fechaEntrega = String.valueOf(anio) + "-" + String.valueOf(mes+1) + "-" + String.valueOf(dia);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //Creamos una instancia nueva, para convertir una cadena a Date.
+ 
+	java.util.Date fechaEst;
+        java.util.Date fechaInicio;
+	java.util.Date fechaEntregaReal=dateFormat.parse(fechaEntrega);  //Se convierte de SimpleDateFormat, a Date
+        
+        try {
+            stmt = cnx.createStatement();
+            query2 = "update prestamo set fecha_entrega = '"+fechaEntrega+"' where id_prestamo = "+id+"";
+            stmt.execute(query2);
+            
+            query = "SELECT * FROM prestamo WHERE id_prestamo = "+id+"";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            while(rs.next()){
+                //Verificar que no se paso de la fecha de entrega
+                fechaEst=dateFormat.parse(rs.getString("fecha_entrega_est"));
+                fechaInicio=dateFormat.parse(rs.getString("fecha_inicio"));
+                //Con el metodo getTime() conseguimos la fecha en milisegundos, y despues las convertimos a dias.
+                int diasAtrasados=(int) ((fechaEntregaReal.getTime()-fechaEst.getTime())/86400000);  //Obtenemos los días atrasados.
+                int dias = (int) ((fechaEntregaReal.getTime() - fechaInicio.getTime())/86400000); //Obtenemos cuantos días tardo en entregar
+                int costoDia = Integer.parseInt(rs.getString("costo_dia"));
+                int total=0;
+                if(diasAtrasados>0){
+                    total = costoDia * (dias-diasAtrasados);
+                    total += (costoDia*2) * (diasAtrasados);
+                }
+                else{
+                    total = costoDia * dias;
+                }
+                aux= true;
+                //Recoger datos y poner  en text;
+                lblFechaPres.setText(fechaEntrega);
+                lblCostoTotal.setText(String.valueOf(total));
+            }
+                
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+        if(!aux){
+            JOptionPane.showMessageDialog(this, "No se encontro el id del prestamo.");
+        }
+    }
 
     public SistemaGUI() {
         initComponents();
@@ -1506,7 +1678,7 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         txtClientePres = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        lblFechaActualPres = new javax.swing.JLabel();
+        lblFechaPres = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         txtFechaEstPres = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
@@ -1525,6 +1697,11 @@ public class SistemaGUI extends javax.swing.JFrame {
         butAgregarSer = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         listaPrestamos = new javax.swing.JList<>();
+        btnBuscarPres = new javax.swing.JButton();
+        jLabel39 = new javax.swing.JLabel();
+        txtCostoDia = new javax.swing.JTextField();
+        jLabel40 = new javax.swing.JLabel();
+        lblCostoTotal = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         lblRegPeliculas2 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -2079,8 +2256,8 @@ public class SistemaGUI extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel11.setText("Fecha de prestamo:");
 
-        lblFechaActualPres.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblFechaActualPres.setText("Fecha a mostrar...");
+        lblFechaPres.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblFechaPres.setText("Fecha a mostrar...");
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel13.setText("Fecha de entrega estimada:");
@@ -2096,6 +2273,11 @@ public class SistemaGUI extends javax.swing.JFrame {
         });
 
         btnEntregarPres.setText("Devolver prestamo");
+        btnEntregarPres.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEntregarPresActionPerformed(evt);
+            }
+        });
 
         comboPagoPres.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
 
@@ -2126,47 +2308,97 @@ public class SistemaGUI extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(listaPrestamos);
 
+        btnBuscarPres.setText("Buscar");
+        btnBuscarPres.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarPresActionPerformed(evt);
+            }
+        });
+
+        jLabel39.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel39.setText("Costo (por día)");
+
+        txtCostoDia.setText("15");
+
+        jLabel40.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel40.setText("Costo total");
+
+        lblCostoTotal.setText("Por mostrar...");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel40)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBuscarPres)
+                .addGap(106, 106, 106))
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel33)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtPelPres)
-                                .addComponent(txtSerPres, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(butAgregarPel)
-                                    .addGap(90, 90, 90)
-                                    .addComponent(btnPrestamo))
-                                .addComponent(butAgregarSer)))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblRegPeliculas1)
-                                .addComponent(jLabel10)
-                                .addComponent(txtClientePres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel32)
-                                .addComponent(comboPagoPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel38)
-                                .addComponent(txtFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(58, 58, 58)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                            .addGap(69, 69, 69)
+                                            .addComponent(butAgregarPel)
+                                            .addGap(180, 180, 180))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addComponent(jLabel30)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                    .addComponent(btnPrestamo)
+                                    .addGap(89, 89, 89))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel33)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(lblRegPeliculas1)
+                                                    .addComponent(jLabel10)
+                                                    .addComponent(txtClientePres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel32)
+                                                    .addComponent(comboPagoPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(58, 58, 58)
+                                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(lblFechaPres)
+                                                    .addComponent(jLabel13)
+                                                    .addComponent(jLabel11)
+                                                    .addComponent(txtFechaEstPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel38)
+                                                    .addComponent(txtFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                            .addComponent(txtPelPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(txtSerPres, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGap(84, 84, 84))
+                                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                                        .addGap(58, 58, 58)
+                                                        .addComponent(butAgregarSer)
+                                                        .addGap(157, 157, 157)))
+                                                .addComponent(btnEntregarPres)
+                                                .addGap(49, 49, 49))))
+                                    .addGap(18, 18, 18)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addContainerGap()
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblFechaActualPres)
-                                .addComponent(jLabel13)
-                                .addComponent(jLabel11)
-                                .addComponent(txtFechaEstPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtBuscarPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel12)))
-                        .addComponent(btnEntregarPres))
-                    .addComponent(jLabel30))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtCostoDia, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel12)
+                                .addComponent(txtBuscarPres, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblCostoTotal)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -2186,7 +2418,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                                 .addGap(87, 87, 87)
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblFechaActualPres)))
+                                .addComponent(lblFechaPres)))
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2199,34 +2431,51 @@ public class SistemaGUI extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(comboPagoPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel33)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtPelPres, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnPrestamo)
-                                    .addComponent(butAgregarPel))
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel30)
-                                .addGap(7, 7, 7)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtSerPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(butAgregarSer)
-                                    .addComponent(btnEntregarPres)))
+                                .addComponent(jLabel33))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(11, 11, 11)
-                                .addComponent(txtFechaEstPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(16, 16, 16)
+                                .addComponent(txtFechaEstPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel38)))
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel38)))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(txtPelPres, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(3, 3, 3)
+                                        .addComponent(butAgregarPel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtSerPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(txtFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(14, 14, 14)
+                                        .addComponent(btnPrestamo)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(butAgregarSer))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(95, 95, 95)
+                                .addComponent(btnEntregarPres))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(52, 52, 52)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel39))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtBuscarPres)
-                    .addComponent(txtFechaInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscarPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCostoDia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnBuscarPres)
+                    .addComponent(jLabel40))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblCostoTotal)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
 
         panelTabs.addTab("Prestamo", jPanel4);
@@ -2744,7 +2993,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnComprarVenActionPerformed
 
     private void btnPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamoActionPerformed
-        prestamo(txtFechaEstPres.getText(), (String)comboPagoPres.getSelectedItem(),txtClientePres.getText());
+        prestamo(txtFechaEstPres.getText(), (String)comboPagoPres.getSelectedItem(),txtClientePres.getText(), Integer.parseInt(txtCostoDia.getText()));
         dmPrestamo.clear();
     }//GEN-LAST:event_btnPrestamoActionPerformed
 
@@ -2921,6 +3170,22 @@ public class SistemaGUI extends javax.swing.JFrame {
         btnRegSer.setVisible(true);
     }//GEN-LAST:event_btnCancelSerActionPerformed
 
+    private void btnBuscarPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPresActionPerformed
+        try {
+            checkQueryPres(Integer.parseInt(txtBuscarPres.getText()));
+        } catch (ParseException ex) {
+            Logger.getLogger(SistemaGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnBuscarPresActionPerformed
+
+    private void btnEntregarPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntregarPresActionPerformed
+        try {
+            devolverPrestamo(Integer.parseInt(txtBuscarPres.getText()));
+        } catch (ParseException ex) {
+            Logger.getLogger(SistemaGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnEntregarPresActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActPel;
     private javax.swing.JButton btnActSer;
@@ -2931,6 +3196,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscarClient;
     private javax.swing.JButton btnBuscarEmp;
     private javax.swing.JButton btnBuscarPel;
+    private javax.swing.JButton btnBuscarPres;
     private javax.swing.JButton btnBuscarSer;
     private javax.swing.JButton btnBuscarVen;
     private javax.swing.JButton btnCancelPel;
@@ -2985,7 +3251,9 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -3002,8 +3270,9 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lbPuesto;
+    private javax.swing.JLabel lblCostoTotal;
     private javax.swing.JLabel lblEstanterias;
-    private javax.swing.JLabel lblFechaActualPres;
+    private javax.swing.JLabel lblFechaPres;
     private javax.swing.JLabel lblHorario;
     private javax.swing.JLabel lblNom;
     private javax.swing.JLabel lblNomClient;
@@ -3036,6 +3305,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtBuscarSer;
     private javax.swing.JTextField txtBuscarVen;
     private javax.swing.JTextField txtClientePres;
+    private javax.swing.JTextField txtCostoDia;
     private javax.swing.JTextField txtCostoPel;
     private javax.swing.JTextField txtCostoSer;
     private javax.swing.JTextField txtCostoVen;
