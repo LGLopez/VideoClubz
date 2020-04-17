@@ -1368,6 +1368,84 @@ public class SistemaGUI extends javax.swing.JFrame {
         }
     }  //CHECK
     
+    public void listaPrestamo(int idToCheck){//Revisar que se presto para mostrarlo en la lista
+        listaPrestamos.setModel(dmPrestamo);
+        
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        Statement stmt2 = null;
+        ResultSet rs2 = null;
+        String query2;
+        
+        try {
+            //Revisar si en el prestamo se llevaron series
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM serie_prestamo WHERE id_prestamo = " + idToCheck + ";";
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            
+            while(rs.next()){
+               stmt2 = cnx.createStatement();
+               query2 = "SELECT * FROM series WHERE id_serie = " + rs.getString("id_serie") + ";";
+               
+               
+                if(stmt2.execute(query2)){
+                    rs2 = stmt2.getResultSet();
+                }
+                
+                while(rs2.next()){
+                    dmPrestamo.addElement(rs2.getString("titulo_ser"));
+                }
+            }
+            
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex);
+        }
+        
+        
+        stmt = null;
+        rs = null;
+        query = null;
+        
+        stmt2 = null;
+        rs2 = null;
+        query2 = null;
+        
+        try {
+            //Revisar si en el prestamo se llevaron peliculas
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM pelicula_prestamo WHERE id_prestamo = " + idToCheck + ";";
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            
+            while(rs.next()){
+               stmt2 = cnx.createStatement();
+               query2 = "SELECT * FROM peliculas WHERE id_pelicula = " + rs.getString("id_pelicula") + ";";
+               
+               
+                if(stmt2.execute(query2)){
+                    rs2 = stmt2.getResultSet();
+                }
+                
+                while(rs2.next()){
+                    dmPrestamo.addElement(rs2.getString("titulo_pel"));
+                }
+            }
+            
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex);
+        }
+        
+    }
+    
     public void checkQueryPres(Integer id) throws ParseException{
         Statement stmt = null;
         ResultSet rs = null;
@@ -1386,7 +1464,7 @@ public class SistemaGUI extends javax.swing.JFrame {
             
             while(rs.next()){
                 aux= true;
-                if(rs.getString("fecha_entrega") != null){
+                if(rs.getString("fecha_entrega") != null){ // En caso de ya estar pagado 
                     String fechaEntrega = rs.getString("fecha_entrega");
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //Creamos una instancia nueva, para convertir una cadena a Date.
 
@@ -1409,6 +1487,9 @@ public class SistemaGUI extends javax.swing.JFrame {
                     else{
                         total = costoDia * dias;
                     }
+                    
+                    listaPrestamo(id);
+                    
                     lblFechaPres.setText(fechaEntrega);
                     lblCostoTotal.setText(String.valueOf(total));
                 }
@@ -1419,7 +1500,8 @@ public class SistemaGUI extends javax.swing.JFrame {
                     txtFechaInicio.setText(rs.getString("fecha_inicio"));
                     txtCostoDia.setText (rs.getString("costo_dia"));
                     lblFechaPres.setText(rs.getString("fecha_entrega"));
-
+                    
+                    listaPrestamo(id);
                 
                     lblCostoTotal.setText(String.valueOf(0));
                 }
@@ -2462,9 +2544,9 @@ public class SistemaGUI extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel39))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel39)
+                    .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscarPres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -3018,7 +3100,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_butAgregarSerActionPerformed
 
     private void btnBuscarVenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVenActionPerformed
-
+        
     }//GEN-LAST:event_btnBuscarVenActionPerformed
 
     private void btnCancelarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarClientActionPerformed
@@ -3171,6 +3253,7 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelSerActionPerformed
 
     private void btnBuscarPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPresActionPerformed
+        dmPrestamo.clear();
         try {
             checkQueryPres(Integer.parseInt(txtBuscarPres.getText()));
         } catch (ParseException ex) {
