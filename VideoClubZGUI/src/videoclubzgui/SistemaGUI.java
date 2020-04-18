@@ -410,7 +410,7 @@ public class SistemaGUI extends javax.swing.JFrame {
             }
                 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE); 
             /*System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());*/
@@ -1532,6 +1532,139 @@ public class SistemaGUI extends javax.swing.JFrame {
         if(!aux){
             JOptionPane.showMessageDialog(this, "No se encontro el id del prestamo.");
         }
+    }
+    
+    public void listaVenta(int idToCheck){//Revisar que se vendio para mostrarlo en la lista
+        listaVenta.setModel(dmVenta);
+        
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        Statement stmt2 = null;
+        ResultSet rs2 = null;
+        String query2;
+        
+        try {
+            //Revisar si en la venta se llevaron series
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM serie_venta WHERE id_venta = " + idToCheck + ";";
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            
+            while(rs.next()){
+               stmt2 = cnx.createStatement();
+               query2 = "SELECT * FROM series WHERE id_serie = " + rs.getString("id_serie") + ";";
+               
+               
+                if(stmt2.execute(query2)){
+                    rs2 = stmt2.getResultSet();
+                }
+                
+                while(rs2.next()){
+                    dmVenta.addElement(rs2.getString("titulo_ser"));
+                }
+            }
+            
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex);
+        }
+        
+        
+        stmt = null;
+        rs = null;
+        query = null;
+        
+        stmt2 = null;
+        rs2 = null;
+        query2 = null;
+        
+        try {
+            //Revisar si en la venta se llevaron peliculas
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM pelicula_venta WHERE id_venta = " + idToCheck + ";";
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            
+            while(rs.next()){
+               stmt2 = cnx.createStatement();
+               query2 = "SELECT * FROM peliculas WHERE id_pelicula = " + rs.getString("id_pelicula") + ";";
+               
+               
+                if(stmt2.execute(query2)){
+                    rs2 = stmt2.getResultSet();
+                }
+                
+                while(rs2.next()){
+                    dmVenta.addElement(rs2.getString("titulo_pel"));
+                }
+            }
+            
+        } catch (SQLException ex) {
+            System.err.println("Error: " + ex);
+        }
+        
+    }
+    
+    public void checkQueryVen(Integer id)throws ParseException{
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query, query2;
+        Boolean aux = false;
+        
+        
+        try {
+            stmt = cnx.createStatement();
+            query = "SELECT * FROM venta WHERE id_venta = "+id+"";
+            rs = stmt.executeQuery(query);
+            
+            if(stmt.execute(query)){
+                rs = stmt.getResultSet();
+            }
+            
+            while(rs.next()){
+                aux= true;
+                txtRFCClientVen.setText(rs.getString("id_cliente"));
+                txtRFCEmpVen.setText(rs.getString("id_empleado"));
+                txtFechaVen.setText(rs.getString("fecha_ven"));
+                comboPagoVen.setSelectedItem(rs.getString("metodo_pago_ven"));
+                txtCostoVen.setText (rs.getString("costo_total"));
+                    
+                listaVenta(id);   
+                }
+                //Recoger datos y poner  en text
+                
+                
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "SQLException: " + ex.getMessage() + "\n" + "SQLState: " + ex.getSQLState() + "\n" + "VendorError: " + ex.getErrorCode(), "Error al registrar", JOptionPane.WARNING_MESSAGE);
+            /*System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());*/
+        }
+        finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {}
+                rs = null;
+            }
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {}
+                stmt = null;
+            }
+        }
+        if(!aux){
+            JOptionPane.showMessageDialog(this, "No se encontro el id de la venta.");
+        }
+        
     }
     
     public void devolverPrestamo(Integer id) throws ParseException{
@@ -3100,7 +3233,12 @@ public class SistemaGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_butAgregarSerActionPerformed
 
     private void btnBuscarVenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVenActionPerformed
-        
+        dmVenta.clear();
+        try {
+            checkQueryVen(Integer.parseInt(txtBuscarVen.getText()));
+        } catch (ParseException ex) {
+            Logger.getLogger(SistemaGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnBuscarVenActionPerformed
 
     private void btnCancelarClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarClientActionPerformed
