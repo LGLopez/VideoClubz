@@ -1489,6 +1489,12 @@ public class SistemaGUI extends javax.swing.JFrame {
                     }
                     
                     listaPrestamo(id);
+                    txtClientePres.setText(rs.getString("id_cliente"));
+                    comboPagoPres.setSelectedItem(rs.getString("metodo_pago_pres"));
+                    txtFechaEstPres.setText(rs.getString("fecha_entrega_est"));
+                    txtFechaInicio.setText(rs.getString("fecha_inicio"));
+                    txtCostoDia.setText(rs.getString("costo_dia"));
+                    lblFechaPres.setText(rs.getString("fecha_entrega"));
                     
                     lblFechaPres.setText(fechaEntrega);
                     lblCostoTotal.setText(String.valueOf(total));
@@ -1498,7 +1504,7 @@ public class SistemaGUI extends javax.swing.JFrame {
                     comboPagoPres.setSelectedItem(rs.getString("metodo_pago_pres"));
                     txtFechaEstPres.setText(rs.getString("fecha_entrega_est"));
                     txtFechaInicio.setText(rs.getString("fecha_inicio"));
-                    txtCostoDia.setText (rs.getString("costo_dia"));
+                    txtCostoDia.setText(rs.getString("costo_dia"));
                     lblFechaPres.setText(rs.getString("fecha_entrega"));
                     
                     listaPrestamo(id);

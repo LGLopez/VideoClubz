@@ -1,6 +1,7 @@
 package videoclubzgui;
 
 import PruebaBD.PruebaBD;
+import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
 
@@ -124,7 +125,7 @@ public class Login extends javax.swing.JFrame {
                     System.out.println("Entraste como el jefe");
                 }
                 else{
-                    System.out.println("Contraseña incorrecta");
+                    JOptionPane.showMessageDialog(this,"Contraseña incorrecta", "Error", JOptionPane.WARNING_MESSAGE);
                 }
                 break;
             case "Empleado":
@@ -134,11 +135,11 @@ public class Login extends javax.swing.JFrame {
                     dispose();
                 }
                 else{
-                    System.out.println("Contraseña incorrecta");
+                    JOptionPane.showMessageDialog(this, "Contraseña incorrecta", "Error", JOptionPane.WARNING_MESSAGE);
                 }
                 break;
             default:
-                System.out.println("no esta bien usuario o contraseña");
+                JOptionPane.showMessageDialog(this, "Usuario inexistente", "Error", JOptionPane.WARNING_MESSAGE);
                 break;
         }
     }//GEN-LAST:event_btnLoginActionPerformed
